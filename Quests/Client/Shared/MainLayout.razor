@@ -1,0 +1,100 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JsRuntime
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<Quests.Client.Pages.Partials.PageLoader />
+
+<AuthorizeView>
+    <Authorized>
+        <!--begin::Main-->
+        <Quests.Client.Pages.Partials.HeaderMobile />
+        <div class="d-flex flex-column flex-root">
+
+            <!--begin::Page-->
+            <div class="d-flex flex-row flex-column-fluid page">
+
+                <Quests.Client.Pages.Partials.Aside />
+
+                <!--begin::Wrapper-->
+                <div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
+
+                    <Quests.Client.Pages.Partials.Header />
+
+                    <!--begin::Content-->
+                    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+
+                        <Quests.Client.Pages.Partials.Subheader />
+
+                        <div class="d-flex flex-column-fluid">
+
+                            <!--begin::Container-->
+                            <div class="container">
+                                @Body
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--end::Content-->
+
+                    <Quests.Client.Pages.Partials.Footer />
+                </div>
+
+                <!--end::Wrapper-->
+            </div>
+
+            <!--end::Page-->
+        </div>
+
+        <!--end::Main-->
+        @*<div class="sidebar">
+                <NavMenu />
+            </div>
+
+            <div class="main">
+                <div class="top-row px-4 auth">
+                    <LoginDisplay />
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                </div>
+
+                <div class="content px-4">
+                    @Body
+                </div>
+            </div>*@
+
+
+        <Quests.Client.Pages.Partials.Extras.OffCanvas.QuickUser />
+        <Quests.Client.Pages.Partials.Extras.OffCanvas.QuickCart />
+        <Quests.Client.Pages.Partials.Extras.OffCanvas.QuickPanel />
+        <Quests.Client.Pages.Partials.Extras.Chat />
+        <Quests.Client.Pages.Partials.Extras.ScrollTop />
+    </Authorized>
+    <NotAuthorized>
+        <RedirectToLogin />
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code
+{
+    private bool _init = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (!_init && user.Identity.IsAuthenticated)
+        {
+            await JsRuntime.InvokeVoidAsync("BlazorInit", DotNetObjectReference.Create(this));
+            await JsRuntime.InvokeVoidAsync("KTApp.init");
+        }
+    }
+
+
+
+    [JSInvokable]
+    public void InvokeMethod(bool data)
+    {
+        _init = data;
+    }
+}
