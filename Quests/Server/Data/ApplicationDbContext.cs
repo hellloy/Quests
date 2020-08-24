@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Quests.Shared;
 
 namespace Quests.Server.Data
 {
@@ -17,5 +18,9 @@ namespace Quests.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<Quest> Quests { get; set; }
+        public DbSet<QuestStep> QuestSteps { get; set; }
+        public DbSet<QuestCategory> QuestCategories { get; set; }
     }
 }

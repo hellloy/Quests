@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Quests.Server.Models
 {
-    public class ApplicationUser : IdentityUser
+    public partial class ApplicationUser : IdentityUser
     {
     }
 }

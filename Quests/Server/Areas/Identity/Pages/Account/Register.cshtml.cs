@@ -47,19 +47,27 @@ namespace Quests.Server.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Ваше Имя")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Номер телефона")]
+            public string Phone { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Пароль {0} должен содержать не менее {2} и не более {1} символов.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Пароль")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Повторите пароль")]
+            [Compare("Password", ErrorMessage = "Пароль и подтверждения пароля не совпадают.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -75,7 +83,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email,FirstName = Input.FirstName,PhoneNumber = Input.Phone};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

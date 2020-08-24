@@ -4,64 +4,147 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+@*<h1>@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
-            <hr />
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control" />
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control" />
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h4>Use another service to register.</h4>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h4>Create a new account.</h4>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.Email"></label>
+                    <input asp-for="Input.Email" class="form-control" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password"></label>
+                    <input asp-for="Input.Password" class="form-control" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword"></label>
+                    <input asp-for="Input.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+        <div class="col-md-6 col-md-offset-2">
+            <section>
+                <h4>Use another service to register.</h4>
+                <hr />
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
                         <div>
                             <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
+                                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                                for details on setting up this ASP.NET application to support logging in via external services.
                             </p>
                         </div>
-                    </form>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            <div>
+                                <p>
+                                    @foreach (var provider in Model.ExternalLogins)
+                                    {
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    }
+                                </p>
+                            </div>
+                        </form>
+                    }
                 }
-            }
-        </section>
+            </section>
+        </div>
+    </div>*@
+<div class="login login-4 wizard d-flex flex-column flex-lg-row flex-column-fluid wizard" id="kt_login">
+    <!--begin::Content-->
+    <div class="login-container d-flex flex-center flex-row flex-row-fluid order-2 order-lg-1 flex-row-fluid bg-white py-lg-0 pb-lg-0 pt-15 pb-12">
+        <!--begin::Container-->
+    <div class="login-content login-content-signup d-flex flex-column">
+        <!--begin::Aside Top-->
+        <div class="d-flex flex-column-auto flex-column px-10">
+            <!--begin::Aside header-->
+            <a href="#" class="login-logo pb-lg-4 pb-10">
+                <img src="assets/media/logos/logo-4.png" class="max-h-70px" alt="" />
+            </a>
+            <!--end::Aside header-->
+              
+        </div>
+        <!--end::Aside Top-->
+        <!--begin::Signin-->
+        <div class="login-form">
+            <!--begin::Form-->
+            
+            <form asp-route-returnUrl="@Model.ReturnUrl" class="form px-10" method="post">
+                <!--begin: Wizard Step 1-->
+                <!--begin::Title-->
+                <div class="pb-10 pb-lg-12">
+                    <h3 class="font-weight-bolder text-dark font-size-h2 font-size-h1-lg">Регистрация</h3>
+                    <div class="text-muted font-weight-bold font-size-h4">
+                        У Вас уже есть аккаунт ?
+                        <a href="custom/pages/login/login-4/signin.html" class="text-primary font-weight-bolder">Войти</a>
+                    </div>
+                </div>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Input.FirstName" class="font-size-h6 font-weight-bolder text-dark"></label>
+                    <input asp-for="Input.FirstName" type="text" class="form-control form-control-solid h-auto py-7 px-6 border-0 rounded-lg font-size-h6" placeholder="Ваше Имя" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Phone" class="font-size-h6 font-weight-bolder text-dark"></label>
+                    <input asp-for="Input.Phone" type="text" class="form-control form-control-solid h-auto py-7 px-6 border-0 rounded-lg font-size-h6"  placeholder="Номер телефона"  />
+                    <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="font-size-h6 font-weight-bolder text-dark"></label>
+                    <input asp-for="Input.Email" type="text" class="form-control form-control-solid h-auto py-7 px-6 border-0 rounded-lg font-size-h6"  placeholder="Email"  />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Password" class="font-size-h6 font-weight-bolder text-dark"></label>
+                    <input asp-for="Input.Password" type="text" class="form-control form-control-solid h-auto py-7 px-6 border-0 rounded-lg font-size-h6"  placeholder="Пароль"  />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.ConfirmPassword" class="font-size-h6 font-weight-bolder text-dark"></label>
+                    <input asp-for="Input.ConfirmPassword" type="text" class="form-control form-control-solid h-auto py-7 px-6 border-0 rounded-lg font-size-h6"  placeholder="Повторите пароль"  />
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                
+                <div class="d-flex justify-content-between pt-7">
+                    <div class="mr-2">
+                        <button class="btn btn-primary font-weight-bolder font-size-h6 pl-8 pr-4 py-4 my-3"  type="submit" >
+                            Отправить
+                            <span class="svg-icon svg-icon-md ml-2">
+                                <!--begin::Svg Icon | path:assets/media/svg/icons/Navigation/Right-2.svg-->
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <polygon points="0 0 24 0 24 24 0 24" />
+                                        <rect fill="#000000" opacity="0.3" transform="translate(8.500000, 12.000000) rotate(-90.000000) translate(-8.500000, -12.000000) " x="7.5" y="7.5" width="2" height="9" rx="1" />
+                                        <path d="M9.70710318,15.7071045 C9.31657888,16.0976288 8.68341391,16.0976288 8.29288961,15.7071045 C7.90236532,15.3165802 7.90236532,14.6834152 8.29288961,14.2928909 L14.2928896,8.29289093 C14.6714686,7.914312 15.281055,7.90106637 15.675721,8.26284357 L21.675721,13.7628436 C22.08284,14.136036 22.1103429,14.7686034 21.7371505,15.1757223 C21.3639581,15.5828413 20.7313908,15.6103443 20.3242718,15.2371519 L15.0300721,10.3841355 L9.70710318,15.7071045 Z" fill="#000000" fill-rule="nonzero" transform="translate(14.999999, 11.999997) scale(1, -1) rotate(90.000000) translate(-14.999999, -11.999997) " />
+                                    </g>
+                                </svg><!--end::Svg Icon-->
+                            </span>
+                        </button>
+                    </div>
+
+                </div>
+                <!--end: Wizard Actions-->
+            </form>
+            <!--end::Form-->
+        </div>
+    </div>
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+
+            @section Scripts {
+                <partial name="_ValidationScriptsPartial" />
+            }
