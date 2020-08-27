@@ -16,6 +16,9 @@ namespace Quests.Shared
         [DisplayName("Описание")]
         public string Description {get;set;}
         [Required]
+        [DisplayName("Город")]
+        public string City { get; set; }
+        [Required]
         [DisplayName("Цена")]
         public int Price {get;set;} = 0;
         [Required]

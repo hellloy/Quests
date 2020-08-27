@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Quests.Client.Services;
 
 namespace Quests.Client
 {
@@ -25,6 +26,8 @@ namespace Quests.Client
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Quests.ServerAPI"));
 
             builder.Services.AddApiAuthorization();
+            builder.Services.AddTransient<IMessagesService,MessagesService>();
+            builder.Services.AddTransient<IQuestDataService,QuestDataService>();
 
             await builder.Build().RunAsync();
         }
