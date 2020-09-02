@@ -4,6 +4,8 @@
 
 @using Quests.Shared
 @using Quests.Client.Services
+@using BlazorInputFile
+@using System.IO
 
 @inject IJSRuntime JsRuntime
 @inject IQuestDataService QuestDataService
@@ -37,6 +39,14 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Город:</label>
+                    <div class="col-lg-6">
+                        <InputText type="text" class="form-control" placeholder="Город" @bind-Value="_quest.City" />
+                        <span class="form-text text-muted">Введите город где будет проходить квест</span>
+                        <ValidationMessage For="@(() => _quest.City)" />
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Описание квеста:</label>
                     <div class="col-lg-6">
                         <InputText type="text" class="summernote" placeholder="Описание:" @bind-Value="_quest.Description" />
@@ -47,29 +57,12 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Изображение:</label>
                     <div class="col-lg-6">
-                        <div class="image-input image-input-outline col-12" id="quest_image">
-                            <div class=" image-input-wrapper img-fluid imgInput" style="width: 100%; height: 360px;"></div>
-
-                            <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Выбрать изображение">
-                                <i class="fa fa-pen icon-sm text-muted"></i>
-                                <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg" />
-                                <input type="hidden" name="profile_avatar_remove" />
-                            </label>
-
-                            <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Удалить изображение">
-                                <i class="ki ki-bold-close icon-xs text-muted"></i>
-                            </span>
-                        </div>
+                        <InputImageCropper  @bind-Image="@_quest.Img"></InputImageCropper>
+                        <ValidationMessage For="@(() => _quest.Img)" />
                     </div>
                 </div>
-                <div class="form-group row">
-                    <label class="col-lg-3 col-form-label">Город:</label>
-                    <div class="col-lg-6">
-                        <InputText type="text" class="form-control" placeholder="Город" @bind-Value="_quest.City" />
-                        <span class="form-text text-muted">Введите город где будет проходить квест</span>
-                        <ValidationMessage For="@(() => _quest.City)" />
-                    </div>
-                </div>
+               
+
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Цена:</label>
                     <div class="col-lg-2">
@@ -89,9 +82,10 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Общее время прохождения:</label>
                     <div class="col-lg-2">
-                        <InputText class="form-control" placeholder="Общее время прохождения" type="time" @bind-Value="TimeProxy" />
+                        
+                        <input class="form-control" placeholder="Общее время прохождения" type="time" bind="@TimeProxy"/>
                         <span class="form-text text-muted">Введите общее время прохождения</span>
-                        <ValidationMessage For="@(() => _quest.TravelTime)" />
+                        <ValidationMessage For="@(() => _quest.TravelTime)"/>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -119,8 +113,8 @@
             <div class="row">
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
-                    <button type="submit" class="btn btn-success mr-2">Submit</button>
-                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-success mr-2">Сохранить</button>
+                    <button type="reset" class="btn btn-secondary">Отмена</button>
                 </div>
             </div>
         </div>
@@ -133,49 +127,17 @@
 
 
 
-<div class="modal fade" id="cropperModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="logoCropper" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoCropper">
-                    Please customize your logo
-                    <small>place part of the image in the marked area</small>
-                </h5>
-                <button type="button" id="logoCropChancel1" class="close chancelCrop" data-dismiss="modal" aria-label="Close">
-                    <i aria-hidden="true" class="ki ki-close"></i>
-                </button>
-            </div>
-            <div class="modal-body">
 
-                <div class="row">
-                    <div style="max-width: 100%;width: 100%">
-                        <img id="image" src="" alt="" style="max-width: 100%" />
-                    </div>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="logoCropChancel" class="btn btn-light-primary font-weight-bold chancelCrop" data-dismiss="modal">Chancel</button>
-                <button type="button" id="cropImage" class="btn btn-primary font-weight-bold">Ok</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 @code {
 
     [Parameter]
-    public int Id { get; set; } = 0;
+    public int Id { get; set; }
 
     private TimeSpan _time = TimeSpan.FromHours(0);
-    private string _cropperImage = null;
 
-    private Quest _quest = new Quest
-    {
-        TravelTime = new TimeSpan(),
-        Img = "image"
-    };
+    private Quest _quest = new Quest();
 
 
     private string TimeProxy
@@ -189,11 +151,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && Id == 0)
         {
-            
+            await JsRuntime.InvokeVoidAsync("KTSummernote.init", DotNetObjectReference.Create(this));
         }
-        
+
     }
 
     [JSInvokable]
@@ -203,39 +165,35 @@
         StateHasChanged();
     }
 
-    [JSInvokable]
-    public void InvokeMethod(string data)
-    {
-        _cropperImage = data;
-        StateHasChanged();
-    }
+    
 
     private async void HandleValidSubmit()
     {
         _quest.TravelTime = _time;
+
         if (Id != 0)
         {
-            await QuestDataService.Update(_quest, _cropperImage);
+            await QuestDataService.Update(_quest,_quest.Img);
         }
         else
         {
-            await QuestDataService.Add(_quest, _cropperImage);
+            await QuestDataService.Add(_quest,_quest.Img);
         }
     }
+
+
 
     protected override async Task OnInitializedAsync()
     {
         if (Id != 0)
         {
             _quest = await QuestDataService.Get(Id);
-            TimeProxy = _quest.TravelTime.ToString();
             StateHasChanged();
-          
-        }
-        await JsRuntime.InvokeVoidAsync("KTSummernote.init", DotNetObjectReference.Create(this));
-        await JsRuntime.InvokeVoidAsync("ImageInput.init", DotNetObjectReference.Create(this));
-    }
+            await JsRuntime.InvokeVoidAsync("KTSummernote.init", DotNetObjectReference.Create(this));
 
+        }
+    }
+    
     
 
 }

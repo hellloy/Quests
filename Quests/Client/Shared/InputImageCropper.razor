@@ -1,0 +1,105 @@
+﻿@namespace Quests.Client.Shared
+@inject IJSRuntime JsRuntime
+
+
+@using BlazorInputFile
+@using System.IO
+@using System.Linq
+
+
+<div class="image-input image-input-outline col-12 p-0" id="quest_image">
+    <div class=" image-input-wrapper img-fluid imgInput" style="width: 100%; height: 360px;background-image: url(@Image)"></div>
+
+    <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Выбрать изображение">
+        <i class="fa fa-pen icon-sm text-muted"></i>
+       
+        <InputFile OnChange="HandleSelection" name="profile_avatar" accept=".png, .jpg, .jpeg" />
+        <input type="hidden" name="profile_avatar_remove" />
+    </label>
+
+    <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Удалить изображение">
+        <i class="ki ki-bold-close icon-xs text-muted"></i>
+    </span>
+    <span class="form-text text-muted">Настройте изображение</span>
+
+</div>
+
+<div class="modal fade" id="cropperModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="logoCropper" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoCropper">
+                    Please customize your logo
+                    <small>place part of the image in the marked area</small>
+                </h5>
+                <button type="button" id="logoCropChancel1" class="close chancelCrop" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div style="max-width: 100%;width: 100%">
+                        <img id="image" src="@Image" alt="" style="max-width: 100%" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="logoCropChancel" class="btn btn-light-primary font-weight-bold chancelCrop" data-dismiss="modal">Chancel</button>
+                <button type="button" id="cropImage" class="btn btn-primary font-weight-bold">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Image { get; set; }
+    [Parameter]
+    public EventCallback<string> ImageChanged { get; set; }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var rawFile = files.FirstOrDefault();
+        if (rawFile != null)
+        {
+
+            var format = "image/jpeg";
+
+            var ms = new MemoryStream();
+
+            await rawFile.Data.CopyToAsync(ms);
+
+            Image = $"data:{format};base64,{Convert.ToBase64String(ms.ToArray())}";
+        }
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JsRuntime.InvokeVoidAsync("ImageInput.init", DotNetObjectReference.Create(this));
+        }
+
+    }
+
+    [JSInvokable]
+    public void InvokeMethod(string data)
+    {
+        Image = data;
+        OnImageChanged(Image);
+        StateHasChanged();
+
+    }
+
+    private Task OnImageChanged(string e)
+    {
+        Image = e;
+
+        return ImageChanged.InvokeAsync(Image);
+    }
+
+}

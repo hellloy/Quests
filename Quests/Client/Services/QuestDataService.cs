@@ -87,23 +87,25 @@ namespace Quests.Client.Services
                     await _messagesService.ShowWarning("Внимание", "Что-то пошло не так, при загрузке изображения. Попробуйте другой файл");
                 }
             }
-            
-            
+
+
             var response = await _http.PostAsJsonAsync<Quest>("api/Quests", quest);
             await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
             if (response.IsSuccessStatusCode)
             {
-                await _messagesService.ShowWarning("Новый квест", "был удачно добавлен");
+                await _messagesService.ShowSuccess("Новый квест", "был удачно добавлен");
                 return await response.Content.ReadFromJsonAsync<Quest>();
             }
 
-            await _messagesService.ShowError("Ошибка", await response.Content.ReadAsStringAsync());
+            await _messagesService.ShowError("Error", "При добавлении квеста произошла ошибка");
             return quest;
         }
 
         public async Task<Quest> Update(Quest quest,string img)
         {
             await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
+
+            await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option, img);
 
             if (img != "")
             {
@@ -118,16 +120,15 @@ namespace Quests.Client.Services
                 }
             }
             
-            
             var response = await _http.PutAsJsonAsync<Quest>("api/Quests/"+quest.Id, quest);
             await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
             if (response.IsSuccessStatusCode)
             {
                 await _messagesService.ShowSuccess("Квест", "был удачно обновлен");
-                return await response.Content.ReadFromJsonAsync<Quest>();
+                return quest;
             }
 
-            await _messagesService.ShowError("Error", await response.RequestMessage.Content.ReadAsStringAsync());
+            await _messagesService.ShowError("Error", "При обновлении квеста произошла ошибка");
             return quest;
         }
 

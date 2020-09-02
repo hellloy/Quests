@@ -35,7 +35,7 @@
         
         @if (_quests != null)
         {
-            <table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
+            <table class="datatable datatable-bordered datatable-head-custom table-striped" id="kt_datatable">
                 <thead>
                     <tr>
                         <th>Изображение</th>
@@ -110,7 +110,6 @@
         _quests = await QuestDataService.Get();
         StateHasChanged();
         await JsRuntime.InvokeVoidAsync("KTDatatableHtmlTableListQuest.init");
-
     }
 
     

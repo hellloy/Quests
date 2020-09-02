@@ -44,16 +44,8 @@ namespace Quests.Server.Controllers
                     string formats = format.Name == "JPEG" ? ".jpg" : "." + format.Name.ToLower();
                     string name = newName + formats;
 
-                    if(image.Width>1024)
-                    {
-                        image.Mutate(s => s.Resize(1024, ((1024 * image.Height) / image.Width)));
-                        image.Save(path + "/images/quests/" + name);
-                    }
-                    else
-                    {
-                        image.Save(path + "/images/quests/" + name);
-                    }
-
+                    
+                    image.Save(path + "/images/quests/" + name);
                     namePath = "/images/quests/"+name;
 
                 }

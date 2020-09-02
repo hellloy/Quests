@@ -56,17 +56,17 @@ var ImageInput = function () {
 
         logoInput.on('change',
             function (imageInput) {
-                var input = imageInput.input;
-                if (input.files && input.files[0]) {
+                //var input = imageInput.input;
+                //if (input.files && input.files[0]) {
 
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $image.attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(input.files[0]);
+                //    var reader = new FileReader();
+                //    reader.onload = function (e) {
+                //        $image.attr('src', e.target.result);
+                //    }
+                //    reader.readAsDataURL(input.files[0]);
 
                     $('#cropperModal').modal('show');
-                }
+                
             });
 
 
@@ -74,6 +74,7 @@ var ImageInput = function () {
             function () {
                 console.log('Start Ok');
                 var croppedImage = $image.cropper('getCroppedCanvas');
+
                 var canvasUrl = croppedImage.toDataURL("image/png");
 
                 logoInput.wrapper.style.backgroundImage = `url(${canvasUrl})`;
