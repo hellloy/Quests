@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Quests.Server.Data;
 using Quests.Server.Models;
+using Quests.Server.Repository;
 
 namespace Quests.Server
 {
@@ -29,9 +30,19 @@ namespace Quests.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(policy =>
+            {
+                policy.AddPolicy("CorsPolicy", opt => opt
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithExposedHeaders("X-Pagination"));
+            });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+             services.AddScoped<IQuestRepository, QuestRepository>();
+
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {

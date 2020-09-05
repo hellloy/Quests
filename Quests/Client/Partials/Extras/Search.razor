@@ -1,0 +1,28 @@
+﻿@using System.Threading
+
+@namespace Quests.Client.Pages.Partials.Extras
+<div class="input-icon">
+    <input type="text" class="form-control" placeholder="Поиск..."    @bind-value="@SearchTerm" @bind-value:event="oninput" @onkeyup="SearchChanged" />
+    <span><i class="flaticon2-search-1 text-muted"></i></span>
+</div>
+
+@code {
+    private Timer _timer;
+    public string SearchTerm { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearchChanged { get; set; }
+
+    private void SearchChanged()
+    {
+        if (_timer != null)
+            _timer.Dispose();
+        _timer = new Timer(OnTimerElapsed, null, 500, 0);
+    }
+
+
+    private void OnTimerElapsed(object sender)
+    {
+        OnSearchChanged.InvokeAsync(SearchTerm);
+        _timer.Dispose();
+    }
+}

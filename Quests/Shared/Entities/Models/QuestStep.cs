@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Quests.Shared
+namespace Quests.Shared.Entities.Models
 {
     public class QuestStep
     {

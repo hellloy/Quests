@@ -1,11 +1,8 @@
 ﻿@page "/quest/edit/{Id:int}"
 @page "/quest/edit"
 
-
-@using Quests.Shared
 @using Quests.Client.Services
-@using BlazorInputFile
-@using System.IO
+@using Quests.Shared.Entities.Models
 
 @inject IJSRuntime JsRuntime
 @inject IQuestDataService QuestDataService
@@ -57,7 +54,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Изображение:</label>
                     <div class="col-lg-6">
-                        <InputImageCropper  @bind-Image="@_quest.Img"></InputImageCropper>
+                        <InputImageCropper  @bind-Image="@img" OldImage ="@_quest.Img"></InputImageCropper>
                         <ValidationMessage For="@(() => _quest.Img)" />
                     </div>
                 </div>
@@ -139,6 +136,8 @@
 
     private Quest _quest = new Quest();
 
+    private string img = "";
+
 
     private string TimeProxy
     {
@@ -173,11 +172,11 @@
 
         if (Id != 0)
         {
-            await QuestDataService.Update(_quest,_quest.Img);
+            await QuestDataService.Update(_quest,img);
         }
         else
         {
-            await QuestDataService.Add(_quest,_quest.Img);
+            await QuestDataService.Add(_quest,img);
         }
     }
 
@@ -188,6 +187,7 @@
         if (Id != 0)
         {
             _quest = await QuestDataService.Get(Id);
+            
             StateHasChanged();
             await JsRuntime.InvokeVoidAsync("KTSummernote.init", DotNetObjectReference.Create(this));
 

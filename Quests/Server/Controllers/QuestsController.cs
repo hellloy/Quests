@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Quests.Server.Data;
+using Quests.Server.Repository;
+using Quests.Shared.Entities.Models;
+using Quests.Shared.Entities.RequestFeatures;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Quests.Server.Data;
-using Quests.Shared;
 
 namespace Quests.Server.Controllers
 {
@@ -15,19 +15,26 @@ namespace Quests.Server.Controllers
     public class QuestsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IQuestRepository _repo;
+        
 
-        public QuestsController(ApplicationDbContext context)
+        public QuestsController(ApplicationDbContext context, IQuestRepository repo)
         {
             _context = context;
+            _repo = repo;
         }
 
         // GET: api/Quests
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Quest>>> GetQuests()
+        public async Task<ActionResult> GetQuests([FromQuery] QuestParameters questParameters,bool all)
         {
-            return await _context.Quests.ToListAsync();
+            if (all) return Ok(await _context.Quests.ToListAsync());
+            var quests = await _repo.GetQuests(questParameters);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(quests.MetaData));
+            return Ok(quests);
         }
 
+       
         // GET: api/Quests/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Quest>> GetQuest(int id)
@@ -101,6 +108,7 @@ namespace Quests.Server.Controllers
 
             return quest;
         }
+
 
         private bool QuestExists(int id)
         {

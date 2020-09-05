@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,7 @@ namespace Quests.Client
             builder.Services.AddApiAuthorization();
             builder.Services.AddTransient<IMessagesService,MessagesService>();
             builder.Services.AddTransient<IQuestDataService,QuestDataService>();
+            builder.Services.AddSweetAlert2();
 
             await builder.Build().RunAsync();
         }

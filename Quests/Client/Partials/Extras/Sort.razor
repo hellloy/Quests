@@ -1,0 +1,25 @@
+﻿@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
+@namespace Quests.Client.Pages.Partials.Extras
+<section>
+    <select class="form-control" @onchange="ApplySort">
+        <option value="-1">- Сортировка -</option>
+        <option value="id">Id ↑</option>
+        <option value="id desc">Id ↓</option>
+        <option value="name">Название ↑</option>
+        <option value="name desc">Название ↓</option>
+        <option value="city">Город ↑</option>
+        <option value="city desc">Город ↓</option>
+    </select>
+</section>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnSortChanged { get; set; }
+    private async Task ApplySort(ChangeEventArgs eventArgs)
+    {
+        if (eventArgs.Value.ToString() == "-1")
+            return;
+        await OnSortChanged.InvokeAsync(eventArgs.Value.ToString());
+    }
+}
