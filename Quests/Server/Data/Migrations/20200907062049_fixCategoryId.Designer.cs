@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Quests.Server.Data;
 
 namespace Quests.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200907062049_fixCategoryId")]
+    partial class fixCategoryId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -355,7 +357,7 @@ namespace Quests.Server.Data.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuestCategoryId")
+                    b.Property<int?>("QuestCategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TravelTime")
@@ -501,9 +503,7 @@ namespace Quests.Server.Data.Migrations
                 {
                     b.HasOne("Quests.Shared.Entities.Models.QuestCategory", "QuestCategory")
                         .WithMany("Quests")
-                        .HasForeignKey("QuestCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("QuestCategoryId");
                 });
 
             modelBuilder.Entity("Quests.Shared.Entities.Models.QuestStep", b =>

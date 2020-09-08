@@ -25,7 +25,7 @@ namespace Quests.Shared.Entities.Models
         public int Points { get; set; }
         [Required]
         [DisplayName("Время прохождения")]
-        public TimeSpan TravelTime { get; set; }
+        public DateTime TravelTime { get; set; }
         [Required]
         [DisplayName("Подсказка")]
         public string Hint { get; set; }

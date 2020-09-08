@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20200907062745_fixCategoryId1.cs" />
+    <Compile Remove="Data\Migrations\20200907062745_fixCategoryId1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Areas\Identity\Pages\Shared\_LoginPartial.cshtml" />
     <None Include="Pages\Error.cshtml" />
     <None Include="Pages\Shared\_Layout.cshtml" />

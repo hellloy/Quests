@@ -4,6 +4,7 @@ using Quests.Shared.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -22,6 +23,10 @@ namespace Quests.Client.Services
         Task<Quest> Add(Quest quest, string img);
         Task<Quest> Update(Quest quest, string img);
         Task Delete(int id);
+
+        Task<List<QuestCategory>> GetAllQuestCategories();
+        Task<QuestCategory> AddQuestCategory(QuestCategory questCategory);
+        Task DeleteQuestCategory(int id);
 
     }
     public class QuestDataService : IQuestDataService
@@ -209,5 +214,74 @@ namespace Quests.Client.Services
             
 
         }
+
+        public async Task<List<QuestCategory>> GetAllQuestCategories()
+        {
+            var questCategories = new List<QuestCategory>();
+            await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
+            try
+            {
+                questCategories = await _http.GetFromJsonAsync<List<QuestCategory>>("api/QuestCategories" );
+            }
+            catch (Exception e)
+            {
+                await _messagesService.ShowError("Error", e.Message);
+            }
+
+            await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
+            return questCategories;
+        }
+
+        public async Task<QuestCategory> AddQuestCategory(QuestCategory questCategory)
+        {
+            await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
+
+            var response = await _http.PostAsJsonAsync<QuestCategory>("api/QuestCategories", questCategory);
+            await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
+            if (response.IsSuccessStatusCode)
+            {
+                await _messagesService.ShowSuccess("Новая категория", "была удачно добавлена");
+                return await response.Content.ReadFromJsonAsync<QuestCategory>();
+            }
+
+            await _messagesService.ShowError("Error", "При добавлении категории произошла ошибка");
+            return questCategory;
+        }
+
+        public async Task DeleteQuestCategory(int id)
+        {
+            var res = await _http.DeleteAsync("api/QuestCategories/" + id);
+            if (res.IsSuccessStatusCode)
+            {
+                _sweetAlertService.FireAsync(
+                    "Удалено",
+                    "Категория была удалена",
+                    SweetAlertIcon.Success
+                );
+            }
+            else
+            {
+                if(res.StatusCode == HttpStatusCode.Conflict)
+                {
+                    _sweetAlertService.FireAsync(
+                        "Не могу удалить категорию",
+                        "В текущей категории есть квесты, переместите квесты и попробуйте ещё раз.",
+                        SweetAlertIcon.Error
+                    );
+                }
+                else
+                {
+                    _sweetAlertService.FireAsync(
+                        "Ошибка при удалении",
+                        "При удалении произошла ошибка, обратитесь к Администратору",
+                        SweetAlertIcon.Error
+                    );
+                }
+            }
+            
+            
+        }
+
+        
     }
 }

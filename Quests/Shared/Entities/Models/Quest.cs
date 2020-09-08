@@ -33,12 +33,13 @@ namespace Quests.Shared.Entities.Models
         public int Distance {get;set;}
         [Required]
         [DisplayName("Время прохождения")]
-        public TimeSpan TravelTime {get;set;} = TimeSpan.FromHours(0);
+        public DateTime TravelTime {get;set;} =new DateTime();
         [DisplayName("Код карты (Iframe)")]
         public string MapCode {get;set;}
         [DisplayName("Код видео (Iframe)")]
         public string VideoCode {get;set;}
-        public string QuestCategoryId {get;set;}
+
+        public int QuestCategoryId { get; set; } 
         public virtual QuestCategory QuestCategory { get; set; }
     }
 }

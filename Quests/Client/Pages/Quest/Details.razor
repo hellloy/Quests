@@ -20,8 +20,8 @@
         <div class="card-spacer mt-n25">
             <!--begin::Row-->
             <div class="row m-0">
-                <div class="col bg-light-warning px-6 py-8 rounded-xl mr-7 mb-7">
-                    <span class="svg-icon svg-icon-3x svg-icon-warning d-block my-2">
+                <div class="col bg-light-success px-6 py-8 rounded-xl mr-7 mb-7">
+                    <span class="svg-icon svg-icon-3x svg-icon-success d-block my-2">
                         <!--begin::Svg Icon | path:/var/www/preview.keenthemes.com/metronic/releases/2020-08-25-063451/theme/html/demo1/dist/../src/media/svg/icons/Shopping/Money.svg--><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <rect x="0" y="0" width="24" height="24"/>
@@ -29,9 +29,9 @@
                                 <path d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z M11.5,14 C12.6045695,14 13.5,13.1045695 13.5,12 C13.5,10.8954305 12.6045695,10 11.5,10 C10.3954305,10 9.5,10.8954305 9.5,12 C9.5,13.1045695 10.3954305,14 11.5,14 Z" fill="#000000"/>
                             </g>
                         </svg><!--end::Svg Icon-->
-                        <span class="align-center text-warning font-weight-bold font-size-h1 mt-2">@_quest.Price ₽</span>
+                        <span class="align-center text-success font-weight-bold font-size-h1 mt-2">@_quest.Price ₽</span>
                     </span>
-                    <a href="#" class="text-warning font-weight-bold font-size-h6">Цена квеста</a>
+                    <a href="#" class="text-success font-weight-bold font-size-h6">Цена квеста</a>
                 </div>
                 <div class="col bg-light-primary px-6 py-8 rounded-xl mb-7">
                     <span class="svg-icon svg-icon-3x svg-icon-primary d-block my-2">
@@ -58,7 +58,7 @@
                                 <path d="M11.9630156,7.5 L12.0369844,7.5 C12.2982526,7.5 12.5154733,7.70115317 12.5355117,7.96165175 L12.9585886,13.4616518 C12.9797677,13.7369807 12.7737386,13.9773481 12.4984096,13.9985272 C12.4856504,13.9995087 12.4728582,14 12.4600614,14 L11.5399386,14 C11.2637963,14 11.0399386,13.7761424 11.0399386,13.5 C11.0399386,13.4872031 11.0404299,13.4744109 11.0414114,13.4616518 L11.4644883,7.96165175 C11.4845267,7.70115317 11.7017474,7.5 11.9630156,7.5 Z" fill="#000000"/>
                             </g>
                         </svg><!--end::Svg Icon-->
-                        <span class="align-center text-danger font-weight-bold font-size-h1 mt-2">@_quest.TravelTime.Hours : @_quest.TravelTime.Minutes</span>
+                        <span class="align-center text-danger font-weight-bold font-size-h1 mt-2">@_quest.TravelTime.ToString("HH:mm")</span>
                     </span>
                     <span  class="text-danger font-weight-bold font-size-h6 mt-2">Время прохождения</span>
                 </div>
@@ -67,6 +67,14 @@
             
         </div>
         <!--end::Stats-->
+        <div class="row">
+            <div class="col">
+                <blockquote class="blockquote">
+                    <p class="mr-8 ml-8">@((MarkupString)_quest.Description)</p>
+                </blockquote>
+            </div>
+        </div>
+        
         <div class="resize-triggers">
             <div class="expand-trigger">
                 <div style="width: 308px; height: 491px;"></div></div>
