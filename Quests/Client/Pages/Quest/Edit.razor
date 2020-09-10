@@ -30,9 +30,7 @@
                     <label class="col-lg-3 col-form-label">Категория</label>
                     <div class="col-lg-6">
                         <div class="input-group">
-                            
-                           
-                            <InputSelect  @bind-Value="CategoryId" class="form-control">
+                            <InputSelect @bind-Value="CategoryId" class="form-control">
                                 @foreach (var item in _questCategories)
                                 {
                                     <option value="@item.Id">@item.Name</option>
@@ -46,9 +44,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-
                     <input type="hidden" @bind-value="@_quest.Id" />
-
                     <label class="col-lg-3 col-form-label">Название:</label>
                     <div class="col-lg-6">
                         <InputText class="form-control" placeholder="Название" @bind-Value="_quest.Name" />
@@ -67,7 +63,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Описание квеста:</label>
                     <div class="col-lg-6">
-                        <InputText type="text" class="summernote" placeholder="Описание:" @bind-Value="_quest.Description" />
+                        <InputSummerNote @bind-Text="_quest.Description"></InputSummerNote>
                         <span class="form-text text-muted">Введите описание квеста</span>
                         <ValidationMessage For="@(() => _quest.Description)" />
                     </div>
@@ -79,8 +75,6 @@
                         <ValidationMessage For="@(() => _quest.Img)" />
                     </div>
                 </div>
-
-
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Цена:</label>
                     <div class="col-lg-2">
@@ -121,10 +115,7 @@
                         <ValidationMessage For="@(() => _quest.VideoCode)" />
                     </div>
                 </div>
-
             </div>
-
-
         </div>
         <div class="card-footer">
             <div class="row">
@@ -137,29 +128,17 @@
         </div>
     </EditForm>
     <!--end::Form-->
-
 </div>
-
-
-
-
-
-
-
 
 @code {
 
     [Parameter]
     public int Id { get; set; }
 
-
-
     private Quest _quest = new Quest();
     private List<QuestCategory> _questCategories = new List<QuestCategory>();
     private string CategoryId { get; set; }
-
     private string img = "";
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -192,8 +171,6 @@
         StateHasChanged();
     }
 
-
-
     private async void HandleValidSubmit()
     {
         _quest.QuestCategoryId = Convert.ToInt32(CategoryId);
@@ -219,39 +196,39 @@
             ConfirmButtonText = "Добавить категорию!",
             CancelButtonText = "Отмена",
             Input = "text",
-        }).ContinueWith( swalTask =>
-        {
-            SweetAlertResult result = swalTask.Result;
-            if (!string.IsNullOrEmpty(result.Value))
-            {
-                var questCategory = new QuestCategory
-                {
-                    Id = 0,
-                    Name = result.Value,
-                };
-                QuestDataService.AddQuestCategory(questCategory).ContinueWith(r =>
-                {
-                    GetCategories().ContinueWith(x =>
-                    {
-                        CategoryId = r.Result.Id.ToString();
-                        StateHasChanged();
-                        
-                    });
-                    
-                });
+        }).ContinueWith(swalTask =>
+       {
+           SweetAlertResult result = swalTask.Result;
+           if (!string.IsNullOrEmpty(result.Value))
+           {
+               var questCategory = new QuestCategory
+               {
+                   Id = 0,
+                   Name = result.Value,
+               };
+               QuestDataService.AddQuestCategory(questCategory).ContinueWith(r =>
+               {
+                   GetCategories().ContinueWith(x =>
+                   {
+                       CategoryId = r.Result.Id.ToString();
+                       StateHasChanged();
 
-            }
-            else if (result.Dismiss == DismissReason.Cancel)
-            {
+                   });
 
-                _sweetAlertService.FireAsync(
-                   "Отмена",
-                   "Добавление категории было отменено",
-                   SweetAlertIcon.Error
+               });
 
-                   );
-            }
-        });
+           }
+           else if (result.Dismiss == DismissReason.Cancel)
+           {
+
+               _sweetAlertService.FireAsync(
+                  "Отмена",
+                  "Добавление категории было отменено",
+                  SweetAlertIcon.Error
+
+                  );
+           }
+       });
 
     }
 
@@ -260,7 +237,7 @@
         _questCategories = await QuestDataService.GetAllQuestCategories();
         CategoryId = _questCategories.FirstOrDefault().Id.ToString();
         StateHasChanged();
-        
+
     }
 
     private async void DeleteQuestCategory()
@@ -278,9 +255,8 @@
             SweetAlertResult result = swalTask.Result;
             if (!string.IsNullOrEmpty(result.Value))
             {
-
-
-                QuestDataService.DeleteQuestCategory(Convert.ToInt32(CategoryId)).ContinueWith(x=>
+                
+                QuestDataService.DeleteQuestCategory(Convert.ToInt32(CategoryId)).ContinueWith(x =>
                 {
                     GetCategories().ContinueWith(r =>
                     {
@@ -295,17 +271,8 @@
                     "Отмена",
                     "Удаление категории было отменено",
                     SweetAlertIcon.Error
-
                     );
             }
         });
-
-
-
     }
-
-
-
-
-
 }

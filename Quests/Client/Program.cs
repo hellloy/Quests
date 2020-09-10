@@ -29,6 +29,7 @@ namespace Quests.Client
             builder.Services.AddApiAuthorization();
             builder.Services.AddTransient<IMessagesService,MessagesService>();
             builder.Services.AddTransient<IQuestDataService,QuestDataService>();
+            builder.Services.AddTransient<IQuestStepDataService,QuestStepDataService>();
             builder.Services.AddSweetAlert2();
 
             await builder.Build().RunAsync();

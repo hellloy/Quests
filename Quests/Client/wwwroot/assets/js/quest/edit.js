@@ -5,6 +5,7 @@ var KTSummernote = function () {
     // Private functions
     var run = function (helper) {
         console.log('init summernote');
+        
         $('.summernote').summernote({
             height: 400,
             tabsize: 2,
@@ -15,6 +16,7 @@ var KTSummernote = function () {
             }
         });
         $('.summernote').summernote('code', $('.summernote').val());
+        
     }
 
     return {

@@ -25,5 +25,14 @@ namespace Quests.Server.Repository
                 .ToListAsync();
             return PagedList<Quest>.ToPagedList(quests, questParameters.PageNumber, questParameters.PageSize);
         }
+        public async Task<PagedList<QuestStep>> GetQuestSteps(QuestParameters questParameters)
+        {
+            var questSteps = await _context.QuestSteps.Include(x=>x.Quest)
+                .Search(questParameters.SearchTerm)
+                .Sort(questParameters.OrderBy)
+                .ToListAsync();
+            return PagedList<QuestStep>.ToPagedList(questSteps, questParameters.PageNumber, questParameters.PageSize);
+        }
+
     }
 }

@@ -24,28 +24,17 @@ Welcome to your new app.
                         <div class="card-body px-12 py-10">
                             <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@quest.Name</a></h3>
                             <div class="text-primary font-size-h4 mb-9">@quest.Price ₽</div>
-                            <div class="font-size-sm mb-8">Outlines keep you honest. They stop you from indulging in poorly ought out metaphorsy about driving and keep you focused one the overall structure of your post</div>
+                            <div class="font-size-sm mb-8">@((MarkupString)quest.Description)</div>
                             <!--begin::Info-->
                             <div class="d-flex mb-3">
-                                <span class="text-dark-50 flex-root font-weight-bold">Shoes Brand</span>
-                                <span class="text-dark flex-root font-weight-bold">Nike</span>
+                                <span class="text-dark-50 flex-root font-weight-bold">Время прохождения:</span>
+                                <span class="text-dark flex-root font-weight-bold">@quest.TravelTime.ToString("HH:mm")</span>
                             </div>
                             <div class="d-flex mb-3">
-                                <span class="text-dark-50 flex-root font-weight-bold">SKU</span>
-                                <span class="text-dark flex-root font-weight-bold">NF3535</span>
+                                <span class="text-dark-50 flex-root font-weight-bold">Дистанция:</span>
+                                <span class="text-dark flex-root font-weight-bold">@quest.Distance</span>
                             </div>
-                            <div class="d-flex mb-3">
-                                <span class="text-dark-50 flex-root font-weight-bold">Color</span>
-                                <span class="text-dark flex-root font-weight-bold">White</span>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <span class="text-dark-50 flex-root font-weight-bold">Collection</span>
-                                <span class="text-dark flex-root font-weight-bold">2020 Spring</span>
-                            </div>
-                            <div class="d-flex">
-                                <span class="text-dark-50 flex-root font-weight-bold">In Stock</span>
-                                <span class="text-dark flex-root font-weight-bold">280</span>
-                            </div>
+                           
                             <!--end::Info-->
                         </div>
                         <!--end::Card Body-->

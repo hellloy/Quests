@@ -8,5 +8,6 @@ namespace Quests.Server.Repository
     public interface IQuestRepository
     {
         Task<PagedList<Quest>> GetQuests(QuestParameters questParameters);
+        Task<PagedList<QuestStep>> GetQuestSteps(QuestParameters questParameters);
     }
 }

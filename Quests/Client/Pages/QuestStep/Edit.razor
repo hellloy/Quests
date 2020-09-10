@@ -1,0 +1,208 @@
+﻿@page "/queststep/edit/{Id:int}"
+@page "/queststep/edit"
+@using Quests.Client.Services
+@using Quests.Shared.Entities.Models
+@using CurrieTechnologies.Razor.SweetAlert2
+
+@inject IJSRuntime JsRuntime
+@inject IQuestStepDataService QuestStepDataService
+@inject IQuestDataService QuestDataService
+@inject SweetAlertService SweetAlertService
+
+
+
+<div class="card card-custom gutter-b example example-compact">
+    <div class="card-header">
+        <h3 class="card-title">Редактирование Этапа Квеста</h3>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+
+            </div>
+        </div>
+    </div>
+    <!--begin::Form-->
+    <EditForm Model="QuestStep" class="form" OnValidSubmit="@HandleValidSubmit">
+        <div class="card-body">
+            <div class="mb-15">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group row">
+
+                    <input type="hidden" @bind-value="@QuestStep.Id" />
+
+                    <label class="col-lg-3 col-form-label">Квест:</label>
+                    <div class="col-lg-6">
+                        <InputSelect @bind-Value="@QuestId" class="form-control">
+                            @foreach (var item in Quests)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </InputSelect>
+                        <span class="form-text text-muted">Выберите квест</span>
+                        <ValidationMessage For="@(() => QuestStep.QuestId)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Название:</label>
+                    <div class="col-lg-6">
+                        <InputText class="form-control" placeholder="Название" @bind-Value="QuestStep.Name" />
+                        <span class="form-text text-muted">Введите название квеста</span>
+                        <ValidationMessage For="@(() => QuestStep.Name)" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Описание этапа:</label>
+                    <div class="col-lg-6">
+                        <InputSummerNote @bind-Text="@QuestStep.Description"></InputSummerNote>
+                        <span class="form-text text-muted">Введите описание этапа</span>
+                        <ValidationMessage For="@(() => QuestStep.Description)"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Изображение:</label>
+                    <div class="col-lg-6">
+                        <InputImageCropper @bind-Image="@img" OldImage="@QuestStep.Img"></InputImageCropper>
+                        <ValidationMessage For="@(() => QuestStep.Img)" />
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Очки:</label>
+                    <div class="col-lg-2">
+                        <InputNumber class="form-control" placeholder="Очки" @bind-Value="QuestStep.Points" />
+                        <span class="form-text text-muted">Введите количество очков</span>
+                        <ValidationMessage For="@(() => QuestStep.Points)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Дистанция в метрах:</label>
+                    <div class="col-lg-2">
+                        <InputNumber class="form-control" placeholder="Дистанция" @bind-Value="QuestStep.Distance" />
+                        <span class="form-text text-muted">Дистанция в метрах</span>
+                        <ValidationMessage For="@(() => QuestStep.Distance)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Общее время прохождения:</label>
+                    <div class="col-lg-2">
+                        <input class="form-control" placeholder="Общее время прохождения" type="time" @bind="@QuestStep.TravelTime" @bind:format="HH:mm:ss" />
+                        <span class="form-text text-muted">Введите общее время прохождения</span>
+                        <ValidationMessage For="@(() => QuestStep.TravelTime)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Вопрос:</label>
+                    <div class="col-lg-6">
+                        <InputText class="form-control" placeholder="Вопрос" @bind-Value="QuestStep.Question" />
+                        <span class="form-text text-muted">Введите вопрос</span>
+                        <ValidationMessage For="@(() => QuestStep.Question)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Подсказка:</label>
+                    <div class="col-lg-6">
+                        <InputText class="form-control" placeholder="Подсказка" @bind-Value="QuestStep.Hint" />
+                        <span class="form-text text-muted">Введите подсказку</span>
+                        <ValidationMessage For="@(() => QuestStep.Hint)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Ответ:</label>
+                    <div class="col-lg-6">
+                        <InputText class="form-control" placeholder="Ответ" @bind-Value="QuestStep.Answer" />
+                        <span class="form-text text-muted">Введите ответ</span>
+                        <ValidationMessage For="@(() => QuestStep.Answer)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Код карты (Iframe):</label>
+                    <div class="col-lg-6">
+                        <InputTextArea class="form-control" placeholder="HTML Iframe" @bind-Value="QuestStep.MapCode" />
+                        <span class="form-text text-muted">Вставьте код IFRAME </span>
+                        <ValidationMessage For="@(() => QuestStep.MapCode)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Код видео (Iframe):</label>
+                    <div class="col-lg-6">
+                        <InputTextArea class="form-control" placeholder="HTML Iframe" @bind-Value="QuestStep.VideoCode" />
+                        <span class="form-text text-muted">Вставьте код IFRAME </span>
+                        <ValidationMessage For="@(() => QuestStep.VideoCode)" />
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <button type="submit" class="btn btn-success mr-2">Сохранить</button>
+                    <button type="reset" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+    <!--end::Form-->
+
+</div>
+
+
+
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private QuestStep QuestStep { get; set; } = new QuestStep();
+    private List<Quest> Quests { get; set; } = new List<Quest>();
+    private string QuestId { get; set; }
+    private string img = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Quests = await QuestDataService.GetAll();
+
+        if (Id != 0)
+        {
+            QuestStep = await QuestStepDataService.Get(Id);
+            QuestId = QuestStep.QuestId.ToString();
+        }
+        else
+        {
+            QuestId = Quests.FirstOrDefault()?.Id.ToString();
+            QuestStep = new QuestStep();
+        }
+    }
+
+    [JSInvokable]
+    public void GetSummerNoteValue(string data)
+    {
+        QuestStep.Description = data;
+        StateHasChanged();
+    }
+    
+    private async void HandleValidSubmit()
+    {
+        QuestStep.QuestId = Convert.ToInt32(QuestId);
+
+        if (Id != 0)
+        {
+            await QuestStepDataService.Update(QuestStep, img);
+        }
+        else
+        {
+            await QuestStepDataService.Add(QuestStep, img);
+        }
+    }
+
+}
