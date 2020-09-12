@@ -28,9 +28,14 @@ namespace Quests.Server.Controllers
 
         // GET: api/QuestSteps
         [HttpGet]
-        public async Task<ActionResult> GetQuestSteps([FromQuery] QuestParameters questParameters,bool all)
+        public async Task<ActionResult> GetQuestSteps([FromQuery] QuestParameters questParameters,bool all,int? questId)
         {
             if (all) return Ok(await _context.QuestSteps.ToListAsync());
+
+            if (questId!=null)
+            {
+                return Ok(await _context.QuestSteps.Where(x => x.QuestId == questId).ToListAsync());
+            }
 
             var questSteps = await _repo.GetQuestSteps(questParameters);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(questSteps.MetaData));

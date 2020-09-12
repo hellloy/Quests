@@ -29,25 +29,25 @@
 
 
         <div class="table-responsive">
-            <table class="table table-striped datatable datatable-bordered datatable-head-custom">
+            <table class="table table-striped table-head-custom table-head-bg table-borderless table-vertical-center">
                 <thead>
                     <tr>
                         <th scope="col" style="width: 100px">
                             <span class="text-hover-primary"></span>
                             Изображение
                         </th>
-                        <th scope="col" style="width: 150px" @onclick="@(()=>SortCol("Quest"))">
-                            <span class="text-secondary text-hover-primary cursor-pointer">
+                        <th scope="col" style="width: 150px" @onclick="@(()=>SortCol("QuestName"))">
+                            <span class="text-hover-primary cursor-pointer" style="-moz-user-select: none">
                                 Квест
                             </span>
-                            <span class="fa @(SetSortIcon("Quest"))"></span>
+                            <span class="fa @(SetSortIcon("QuestName"))"></span>
                         </th>
                         <th scope="col" style="width: 150px" @onclick="@(()=>SortCol("Name"))">
-                            <span class="text-secondary text-hover-primary cursor-pointer">Название</span>
+                            <span class="text-hover-primary cursor-pointer">Название</span>
                             <span class="fa @(SetSortIcon("Name"))"></span>
                         </th>
                         <th scope="col"@onclick="@(() => SortCol("Description"))">
-                            <span class="text-secondary text-hover-primary cursor-pointer">Описание</span>
+                            <span class="text-hover-primary cursor-pointer">Описание</span>
                             <span class="fa @(SetSortIcon("Description"))"></span>
                         </th>
                         <th scope="col" style="width: 200px">Действие</th>
@@ -62,7 +62,7 @@
                             <td style="vertical-align: middle;">
                                 <img src="@questStep.Img" class="img-thumbnail img-fluid">
                             </td>
-                            <td style="vertical-align: middle;">@questStep.Quest.Name</td>
+                            <td style="vertical-align: middle;">@questStep.QuestName</td>
                             <td style="vertical-align: middle;">@questStep.Name</td>
                             <td style="vertical-align: middle;">@((MarkupString)Helper.GetFirstCharacters(questStep.Description, 250))</td>
                             <td style="vertical-align: middle;">
@@ -124,7 +124,7 @@
 @code {
 
 
-    private List<QuestStep> QuestSteps { get; set; } = new List<QuestStep>();
+    private List<VM> QuestSteps { get; set; } = new List<VM>();
     public MetaData MetaData { get; set; } = new MetaData();
 
     private readonly QuestParameters _questStepParameters = new QuestParameters();
@@ -147,7 +147,26 @@
     private async Task GetQuest()
     {
         var pagingResponse = await QuestStepDataService.Get(_questStepParameters);
-        QuestSteps = pagingResponse.Items;
+        QuestSteps = pagingResponse.Items.Select(q => new VM()
+        {
+            Id = q.Id,
+            Img = q.Img,
+            TravelTime = q.TravelTime,
+            QuestId = q.QuestId,
+            Hint = q.Hint,
+            Answer = q.Answer,
+            Name = q.Name,
+            Points = q.Points,
+            Quest = q.Quest,
+            Question = q.Question,
+            Description = q.Description,
+            Distance = q.Distance,
+            MapCode = q.MapCode,
+            QuestName = q.Quest.Name,
+            StepNumber = q.StepNumber,
+            VideoCode = q.VideoCode
+
+        }).ToList();
         MetaData = pagingResponse.MetaData;
     }
 
@@ -176,7 +195,7 @@
     {
         if (columnName != _activeSortColumn)
         {
-             
+
             QuestSteps = QuestSteps.OrderBy(x => x.GetType().GetProperty(columnName).GetValue(x, null)).ToList();
             _isSortedAscending = true;
             _activeSortColumn = columnName;
@@ -203,5 +222,10 @@
             return string.Empty;
         }
         return _isSortedAscending ? "fa-sort-up" : "fa-sort-down";
+    }
+
+    public class VM : QuestStep
+    {
+        public string QuestName { get; set; }
     }
 }

@@ -45,7 +45,6 @@ namespace Quests.Server.Controllers
             {
                 return NotFound();
             }
-
             return quest;
         }
 

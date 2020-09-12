@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -41,5 +42,6 @@ namespace Quests.Shared.Entities.Models
 
         public int QuestCategoryId { get; set; } 
         public virtual QuestCategory QuestCategory { get; set; }
+        
     }
 }

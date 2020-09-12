@@ -1,4 +1,5 @@
 ﻿using System;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -45,5 +46,6 @@ namespace Quests.Shared.Entities.Models
         public int StepNumber { get; set; }
         public int QuestId { get; set; }
         public virtual Quest Quest { get; set; }
+        
     }
 }

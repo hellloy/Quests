@@ -19,6 +19,7 @@ namespace Quests.Client.Services
     {
         Task<PagingResponse<QuestStep>> Get(QuestParameters questStepParameters);
         Task<List<QuestStep>> GetAll();
+        Task<List<QuestStep>> GetFromQuest(int questId);
         Task<QuestStep> Get(int id);
         Task<QuestStep> Add(QuestStep questStep, string img);
         Task<QuestStep> Update(QuestStep questStep, string img);
@@ -86,6 +87,24 @@ namespace Quests.Client.Services
             try
             {
                 questSteps = await _http.GetFromJsonAsync<List<QuestStep>>("api/QuestSteps?all=true" );
+            }
+            catch (Exception e)
+            {
+                await _messagesService.ShowError("Error", e.Message);
+            }
+
+            await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
+            return questSteps;
+        }
+
+        
+        public async Task<List<QuestStep>> GetFromQuest(int questId)
+        {
+            var questSteps = new List<QuestStep>();
+            await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
+            try
+            {
+                questSteps = await _http.GetFromJsonAsync<List<QuestStep>>("api/QuestSteps?questId="+questId);
             }
             catch (Exception e)
             {
