@@ -102,7 +102,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Код карты (Iframe):</label>
                     <div class="col-lg-6">
-                        <InputTextArea class="form-control" placeholder="HTML Iframe" type="time" @bind-Value="_quest.MapCode" />
+                        <InputTextArea class="form-control" placeholder="HTML Iframe"  @bind-Value="_quest.MapCode" />
                         <span class="form-text text-muted">Вставьте код IFRAME </span>
                         <ValidationMessage For="@(() => _quest.MapCode)" />
                     </div>
@@ -110,7 +110,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Код видео (Iframe):</label>
                     <div class="col-lg-6">
-                        <InputTextArea class="form-control" placeholder="HTML Iframe" type="time" @bind-Value="_quest.VideoCode" />
+                        <InputTextArea class="form-control" placeholder="HTML Iframe"  @bind-Value="_quest.VideoCode" />
                         <span class="form-text text-muted">Вставьте код IFRAME </span>
                         <ValidationMessage For="@(() => _quest.VideoCode)" />
                     </div>
@@ -135,8 +135,11 @@
     [Parameter]
     public int Id { get; set; }
 
-    private Quest _quest = new Quest();
-    private List<QuestCategory> _questCategories = new List<QuestCategory>();
+    public Quest _quest { get; set; } = new Quest();
+    public List<QuestCategory> _questCategories { get; set; } = new List<QuestCategory>();
+
+    //private Quest _quest = new Quest();
+       // private List<QuestCategory> _questCategories = new List<QuestCategory>();
     private string CategoryId { get; set; }
     private string img = "";
 
@@ -197,38 +200,38 @@
             CancelButtonText = "Отмена",
             Input = "text",
         }).ContinueWith(swalTask =>
-       {
-           SweetAlertResult result = swalTask.Result;
-           if (!string.IsNullOrEmpty(result.Value))
-           {
-               var questCategory = new QuestCategory
-               {
-                   Id = 0,
-                   Name = result.Value,
-               };
-               QuestDataService.AddQuestCategory(questCategory).ContinueWith(r =>
-               {
-                   GetCategories().ContinueWith(x =>
-                   {
-                       CategoryId = r.Result.Id.ToString();
-                       StateHasChanged();
+        {
+            SweetAlertResult result = swalTask.Result;
+            if (!string.IsNullOrEmpty(result.Value))
+            {
+                var questCategory = new QuestCategory
+                {
+                    Id = 0,
+                    Name = result.Value,
+                };
+                QuestDataService.AddQuestCategory(questCategory).ContinueWith(r =>
+                {
+                    GetCategories().ContinueWith(x =>
+                    {
+                        CategoryId = r.Result.Id.ToString();
+                        StateHasChanged();
 
-                   });
+                    });
 
-               });
+                });
 
-           }
-           else if (result.Dismiss == DismissReason.Cancel)
-           {
+            }
+            else if (result.Dismiss == DismissReason.Cancel)
+            {
 
-               _sweetAlertService.FireAsync(
-                  "Отмена",
-                  "Добавление категории было отменено",
-                  SweetAlertIcon.Error
+                _sweetAlertService.FireAsync(
+                   "Отмена",
+                   "Добавление категории было отменено",
+                   SweetAlertIcon.Error
 
-                  );
-           }
-       });
+                   );
+            }
+        });
 
     }
 
@@ -255,7 +258,7 @@
             SweetAlertResult result = swalTask.Result;
             if (!string.IsNullOrEmpty(result.Value))
             {
-                
+
                 QuestDataService.DeleteQuestCategory(Convert.ToInt32(CategoryId)).ContinueWith(x =>
                 {
                     GetCategories().ContinueWith(r =>

@@ -89,9 +89,9 @@
     }
 
     [JSInvokable]
-    public void InvokeMethod(string data)
+    public void InvokeMethod()
     {
-        Image = data;
+
         OnImageChanged(Image);
         StateHasChanged();
 
@@ -100,7 +100,6 @@
     private Task OnImageChanged(string e)
     {
         Image = e;
-
         return ImageChanged.InvokeAsync(Image);
     }
 

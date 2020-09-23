@@ -77,10 +77,10 @@ var ImageInput = function () {
                 console.log('Start Ok');
                 var croppedImage = $image.cropper('getCroppedCanvas');
 
-                var canvasUrl = croppedImage.toDataURL("image/png");
-
+                var canvasUrl = croppedImage.toDataURL("image/png").toString();
+                $image.src = `url(${canvasUrl})`;
                 logoInput.wrapper.style.backgroundImage = `url(${canvasUrl})`;
-                helper.invokeMethodAsync("InvokeMethod", canvasUrl);
+                helper.invokeMethodAsync("InvokeMethod");
                 $("#cropperModal").modal("hide");
                 console.log('End Ok');
             });

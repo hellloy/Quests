@@ -1,8 +1,8 @@
 ﻿@inherits LayoutComponentBase
 @inject IJSRuntime JsRuntime
-@using System.Security.Claims
+@*@using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationStateProvider AuthenticationStateProvider*@
 <Quests.Client.Pages.Partials.PageLoader />
 
 <AuthorizeView>
@@ -47,26 +47,10 @@
         </div>
 
         <!--end::Main-->
-        @*<div class="sidebar">
-                <NavMenu />
-            </div>
-
-            <div class="main">
-                <div class="top-row px-4 auth">
-                    <LoginDisplay />
-                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-                </div>
-
-                <div class="content px-4">
-                    @Body
-                </div>
-            </div>*@
+       
 
 
         <Quests.Client.Pages.Partials.Extras.OffCanvas.QuickUser />
-        <Quests.Client.Pages.Partials.Extras.OffCanvas.QuickCart />
-        <Quests.Client.Pages.Partials.Extras.OffCanvas.QuickPanel />
-        <Quests.Client.Pages.Partials.Extras.Chat />
         <Quests.Client.Pages.Partials.Extras.ScrollTop />
     </Authorized>
     <NotAuthorized>
@@ -81,13 +65,18 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        if (!_init && user.Identity.IsAuthenticated)
+        if (firstRender)
         {
             await JsRuntime.InvokeVoidAsync("BlazorInit", DotNetObjectReference.Create(this));
-            await JsRuntime.InvokeVoidAsync("KTApp.init");
+        //    await JsRuntime.InvokeVoidAsync("KTApp.init");
         }
+        //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //var user = authState.User;
+        //if (!_init && (user.Identity.IsAuthenticated && firstRender))
+        //{
+        //    await JsRuntime.InvokeVoidAsync("BlazorInit", DotNetObjectReference.Create(this));
+        //    await JsRuntime.InvokeVoidAsync("KTApp.init");
+        //}
     }
 
 

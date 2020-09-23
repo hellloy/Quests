@@ -49,7 +49,7 @@ function BlazorInit(helper) {
     KTLayoutStretchedCard.init('kt_page_stretched_card');
 
     // Init Code Highlighter & Preview Blocks(used to demonstrate the theme features)
-	KTLayoutExamples.init();
+	//KTLayoutExamples.init();
 
     // Init Demo Selection Panel
 	KTLayoutDemoPanel.init('kt_demo_panel');
