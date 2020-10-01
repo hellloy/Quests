@@ -34,7 +34,7 @@ namespace Quests.Server.Controllers
 
             if (questId!=null)
             {
-                return Ok(await _context.QuestSteps.Where(x => x.QuestId == questId).ToListAsync());
+                return Ok(await _context.QuestSteps.Where(x => x.QuestId == questId).OrderBy(x=>x.StepNumber).ToListAsync());
             }
 
             var questSteps = await _repo.GetQuestSteps(questParameters);

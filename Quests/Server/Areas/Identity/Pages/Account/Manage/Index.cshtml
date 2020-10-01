@@ -1,29 +1,121 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
-
-<h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 <div class="row">
     <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control" disabled />
-            </div>
-            <div class="form-group">
-                <label asp-for="Input.PhoneNumber"></label>
-                <input asp-for="Input.PhoneNumber" class="form-control" />
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
-        </form>
+        
     </div>
 </div>
+<!--begin::Tab-->
+<div class="tab-pane show active px-7" id="kt_user_edit_tab_1" role="tabpanel">
+    <!--begin::Row-->
+    <div class="row">
+       
+        <div class="col-xl-2"></div>
+        <div class="col-xl-7 my-2">
+            <form id="profile-form" method="post">
+                <!--begin::Row-->
+                <div class="row">
+                    <label class="col-3"></label>
+                    <div class="col-9">
+                        <h6 class="text-dark font-weight-bold mb-10">Customer Info:</h6>
+                    </div>
+                </div>
+                <!--end::Row-->
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Avatar</label>
+                    <div class="col-9">
+                        <div class="image-input image-input-empty image-input-outline" id="kt_user_edit_avatar" style="background-image: url(assets/media/users/blank.png)">
+                            <div class="image-input-wrapper"></div>
+                            <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
+                                <i class="fa fa-pen icon-sm text-muted"></i>
+                                <input type="file" name="profile_avatar" accept=".png, .jpg, .jpeg">
+                                <input type="hidden" name="profile_avatar_remove">
+                            </label>
+                            <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="" data-original-title="Cancel avatar">
+                                <i class="ki ki-bold-close icon-xs text-muted"></i>
+                            </span>
+                            <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="remove" data-toggle="tooltip" title="" data-original-title="Remove avatar">
+                                <i class="ki ki-bold-close icon-xs text-muted"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Group-->
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left" asp-for="Username"></label>
+                    <div class="col-9">
+                        <input class="form-control form-control-lg form-control-solid" asp-for="Username"  disabled />
+                    </div>
+                </div>
+                <!--end::Group-->
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left" asp-for="Input.PhoneNumber"></label>
+                    <div class="col-9">
+                        <input class="form-control form-control-lg form-control-solid" asp-for="Input.PhoneNumber" />
+                        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <!--end::Group-->
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Company Name</label>
+                    <div class="col-9">
+                        <input class="form-control form-control-lg form-control-solid" type="text" value="Loop Inc.">
+                        <span class="form-text text-muted">If you want your invoices addressed to a company. Leave blank to use your full name.</span>
+                    </div>
+                </div>
+                <!--end::Group-->
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Contact Phone</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="la la-phone"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg form-control-solid" value="+45678967456" placeholder="Phone">
+                        </div>
+                        <span class="form-text text-muted">We'll never share your email with anyone else.</span>
+                    </div>
+                </div>
+                <!--end::Group-->
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <label class="col-form-label col-3 text-lg-right text-left">Email Address</label>
+                    <div class="col-9">
+                        <div class="input-group input-group-lg input-group-solid">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="la la-at"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control form-control-lg form-control-solid" value="anna.krox@loop.com" placeholder="Email">
+                        </div>
+                    </div>
+                </div>
+                <!--end::Group-->
+                <!--begin::Group-->
+                <div class="form-group row">
+                    <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+                </div>
+                <!--end::Group-->
+            </form>
+        </div>
+    </div>
+    <!--end::Row-->
+</div>
+<!--end::Tab-->
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

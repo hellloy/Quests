@@ -56,7 +56,7 @@
                     <div class="col-lg-6">
                         <InputSummerNote @bind-Text="@QuestStep.Description"></InputSummerNote>
                         <span class="form-text text-muted">Введите описание этапа</span>
-                        <ValidationMessage For="@(() => QuestStep.Description)"/>
+                        <ValidationMessage For="@(() => QuestStep.Description)" />
                     </div>
                 </div>
                 <div class="form-group row">
@@ -130,6 +130,14 @@
                         <InputTextArea class="form-control" placeholder="HTML Iframe" @bind-Value="QuestStep.VideoCode" />
                         <span class="form-text text-muted">Вставьте код IFRAME </span>
                         <ValidationMessage For="@(() => QuestStep.VideoCode)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">№ Шага:</label>
+                    <div class="col-lg-6">
+                        <InputNumber class="form-control" placeholder="Номер шага" @bind-Value="QuestStep.StepNumber" />
+                        <span class="form-text text-muted">Номер шага</span>
+                        <ValidationMessage For="@(() => QuestStep.StepNumber)" />
                     </div>
                 </div>
 

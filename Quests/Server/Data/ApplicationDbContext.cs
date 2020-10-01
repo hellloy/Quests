@@ -18,5 +18,7 @@ namespace Quests.Server.Data
         public DbSet<Quest> Quests { get; set; }
         public DbSet<QuestStep> QuestSteps { get; set; }
         public DbSet<QuestCategory> QuestCategories { get; set; }
+        public DbSet<MyQuest> MyQuests { get; set; }
+        public DbSet<MyQuestStep> MyQuestSteps { get; set; }
     }
 }

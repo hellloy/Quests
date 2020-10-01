@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using System.Security.Claims;
 using Quests.Server.Data;
 using Quests.Server.Models;
 using Quests.Server.Repository;
@@ -60,9 +61,27 @@ namespace Quests.Server
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddAuthentication()
-                .AddIdentityServerJwt();
+                .AddIdentityServerJwt()
+                //.AddGoogle(options =>
+                //{
+                //    IConfigurationSection googleAuthNSection =
+                //        Configuration.GetSection("Authentication:Google");
+
+                //    options.ClientId = googleAuthNSection["ClientId"];
+                //    options.ClientSecret = googleAuthNSection["ClientSecret"];
+                //})
+                .AddVkontakte(options =>
+                {
+                    IConfigurationSection vkAuthNSection =
+                        Configuration.GetSection("Authentication:VK");
+
+                    options.ClientId = vkAuthNSection["ClientId"];
+                    options.ClientSecret = vkAuthNSection["ClientSecret"];
+                });
 
             services.AddControllersWithViews();
+            services.Configure<IdentityOptions>(options => 
+                options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
             services.AddRazorPages();
         }
 

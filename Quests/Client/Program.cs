@@ -30,6 +30,8 @@ namespace Quests.Client
             builder.Services.AddTransient<IMessagesService,MessagesService>();
             builder.Services.AddTransient<IQuestDataService,QuestDataService>();
             builder.Services.AddTransient<IQuestStepDataService,QuestStepDataService>();
+            builder.Services.AddTransient<IMyQuestDataService,MyQuestDataService>();
+            builder.Services.AddTransient<IMyQuestStepDataService,MyQuestStepDataService>();
             builder.Services.AddSweetAlert2();
 
             await builder.Build().RunAsync();

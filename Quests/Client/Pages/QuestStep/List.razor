@@ -58,7 +58,7 @@
                     {
                         var link = "/questStep/edit/" + questStep.Id;
                         var detailsLink = "/questStep/details/" + questStep.Id;
-                        <tr scope="row" id="@questStep.Id">
+                        <tr scope="row">
                             <td style="vertical-align: middle;">
                                 <img src="@questStep.Img" class="img-thumbnail img-fluid">
                             </td>
@@ -224,6 +224,7 @@
         return _isSortedAscending ? "fa-sort-up" : "fa-sort-down";
     }
 
+    
     public class VM : QuestStep
     {
         public string QuestName { get; set; }
