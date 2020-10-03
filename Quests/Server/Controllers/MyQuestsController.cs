@@ -32,10 +32,30 @@ namespace Quests.Server.Controllers
 
         // GET: api/MyQuests
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MyQuest>>> GetMyQuests()
+        public async Task<ActionResult<IEnumerable<MyQuestsVm>>> GetMyQuests()
         {
             var currentUserId = _userManager.GetUserId(User);
-            return await _context.MyQuests.Include(x => x.Quest).Where(x => x.UserId == currentUserId).ToListAsync();
+            var myQuests = await _context.MyQuests.Include(x => x.Quest).Where(x => x.UserId == currentUserId).ToListAsync();
+            var myQuestSteps = await _context.MyQuestSteps.Where(x => myQuests.Select(y => y.Id).Contains(x.MyQuestId)).ToListAsync();
+            
+            
+            List<MyQuestsVm> myQuestsVms = new List<MyQuestsVm>();
+            foreach (var item in myQuests)
+            {
+                var steps = myQuestSteps.Where(x => x.MyQuestId == item.Id).ToList();
+                MyQuestsVm myQuestsVm = new MyQuestsVm
+                {
+                    Status = item.Status,
+                    Points = steps.Sum(x => x.Points),
+                    Name = item.Quest.Name,
+                    Id = item.Id,
+                    StageCount = steps.Count(x => x.MyQuestId == item.Id),
+                    CurrentProgress = GetCurrentProgress(steps),
+                    Img = item.Quest.Img
+                };
+                myQuestsVms.Add(myQuestsVm);
+            }
+            return myQuestsVms;
         }
 
         // GET: api/MyQuests/5
@@ -184,6 +204,19 @@ namespace Quests.Server.Controllers
         private bool MyQuestExists(int id)
         {
             return _context.MyQuests.Any(e => e.Id == id);
+        }
+
+        private int GetCurrentProgress(List<MyQuestStep> myQuestSteps)
+        {
+            
+            int count = myQuestSteps.Count;
+            int finished = myQuestSteps.Count(x => x.Status == MyQuestStepStatus.Finished);
+            if (count == 0 || finished == 0)
+            {
+                return 0;
+            }
+            var result = ((double)finished/count) * 100;
+            return (int)result;
         }
     }
 }

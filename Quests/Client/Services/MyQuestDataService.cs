@@ -14,7 +14,7 @@ namespace Quests.Client.Services
     public interface IMyQuestDataService
     {
         
-        Task<List<MyQuest>> Get();
+        Task<List<MyQuestsVm>> Get();
         Task<MyQuestVm> Get(int id);
         Task<MyQuest> Add(Quest quest);
         Task<MyQuest> Update(MyQuest myQuest);
@@ -44,13 +44,13 @@ namespace Quests.Client.Services
             _sweetAlertService = sweetAlertService;
         }
 
-        public async Task<List<MyQuest>> Get()
+        public async Task<List<MyQuestsVm>> Get()
         {
-            var myQuests = new List<MyQuest>();
+            var myQuests = new List<MyQuestsVm>();
             await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
             try
             {
-                myQuests = await _http.GetFromJsonAsync<List<MyQuest>>("api/MyQuests" );
+                myQuests = await _http.GetFromJsonAsync<List<MyQuestsVm>>("api/MyQuests" );
             }
             catch (Exception e)
             {

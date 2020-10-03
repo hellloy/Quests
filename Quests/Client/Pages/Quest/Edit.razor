@@ -71,7 +71,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Изображение:</label>
                     <div class="col-lg-6">
-                        <InputImageCropper @bind-Image="@img" OldImage="@_quest.Img"></InputImageCropper>
+                        <InputImageCropper  @bind-Image="@img" OldImage="@_quest.Img" ></InputImageCropper>
                         <ValidationMessage For="@(() => _quest.Img)" />
                     </div>
                 </div>
@@ -139,7 +139,7 @@
     public List<QuestCategory> _questCategories { get; set; } = new List<QuestCategory>();
 
     //private Quest _quest = new Quest();
-       // private List<QuestCategory> _questCategories = new List<QuestCategory>();
+    // private List<QuestCategory> _questCategories = new List<QuestCategory>();
     private string CategoryId { get; set; }
     private string img = "";
 
@@ -176,6 +176,7 @@
 
     private async void HandleValidSubmit()
     {
+        StateHasChanged();
         _quest.QuestCategoryId = Convert.ToInt32(CategoryId);
 
         if (Id != 0)
@@ -188,6 +189,7 @@
         }
     }
 
+    
     private async void AddQuestCategory()
     {
         await _sweetAlertService.FireAsync(new SweetAlertOptions

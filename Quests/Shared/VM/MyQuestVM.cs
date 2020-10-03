@@ -8,6 +8,5 @@ namespace Quests.Shared.VM
         public MyQuestStep MyActiveStep { get; set; }
         public QuestStep QuestStep { get; set; }
 
-
     }
 }

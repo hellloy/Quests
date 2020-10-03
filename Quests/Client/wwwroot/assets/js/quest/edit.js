@@ -29,61 +29,10 @@ var KTSummernote = function () {
 
 var ImageInput = function () {
     var run = function (helper) {
-        console.log('init image input');
+        
         var logoInput = new window.KTImageInput("quest_image");
 
-        var $image = $('#image');
-        var cropBoxData;
-        var canvasData;
-
-
-        $('#cropperModal').on('shown.bs.modal',
-            function () {
-                $image.cropper({
-                    autoCropArea: 1,
-                    dragMode: "move",
-                    aspectRatio: 16 / 9,
-                    ready: function () {
-                        $image.cropper('setCanvasData', canvasData);
-                        $image.cropper('setCropBoxData', cropBoxData);
-                    }
-                });
-
-            }).on('hidden.bs.modal',
-                function () {
-                    $image.cropper('destroy');
-                    console.log('Cropper Destroy');
-                });
-
-
-        logoInput.on('change',
-            function (imageInput) {
-                //var input = imageInput.input;
-                //if (input.files && input.files[0]) {
-
-                //    var reader = new FileReader();
-                //    reader.onload = function (e) {
-                //        $image.attr('src', e.target.result);
-                //    }
-                //    reader.readAsDataURL(input.files[0]);
-
-                    $('#cropperModal').modal('show');
-                
-            });
-
-
-        $('#cropImage').on('click',
-            function () {
-                console.log('Start Ok');
-                var croppedImage = $image.cropper('getCroppedCanvas');
-
-                var canvasUrl = croppedImage.toDataURL("image/png").toString();
-                $image.src = `url(${canvasUrl})`;
-                logoInput.wrapper.style.backgroundImage = `url(${canvasUrl})`;
-                helper.invokeMethodAsync("InvokeMethod");
-                $("#cropperModal").modal("hide");
-                console.log('End Ok');
-            });
+        
 
         $(".chancelCrop").click(function () {
 
@@ -95,9 +44,12 @@ var ImageInput = function () {
             if (logoInput.hidden) {
                 logoInput.hidden.value = "0";
             }
-            helper.invokeMethodAsync("InvokeMethod", null);
+            helper.invokeMethodAsync("InvokeMethod");
         });
+
+        
     }
+    
     return{
         init: function (helper) {
             run(helper);

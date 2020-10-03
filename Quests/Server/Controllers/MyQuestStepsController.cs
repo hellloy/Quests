@@ -121,7 +121,7 @@ namespace Quests.Server.Controllers
                 await _context.SaveChangesAsync();
             }
 
-           
+            myQuestStep.Status = MyQuestStepStatus.Finished;
             _context.Entry(myQuestStep).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
