@@ -8,13 +8,13 @@
 <div class="login-container order-2 order-lg-1 d-flex flex-center flex-row-fluid px-7 pt-lg-0 pb-lg-0 pt-4 pb-6 bg-white">
     <!--begin::Wrapper-->
     <div class="login-content d-flex flex-column pt-lg-0 pt-12">
-        <h4 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h4>
+        <h4 id="external-login-title">Ассоциация вашего @Model.ProviderDisplayName аккаунта.</h4>
         <hr />
 
         <p id="external-login-description" class="text-info">
-            You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-            Please enter an email address for this site below and click the Register button to finish
-            logging in.
+            Вы успешно прошли аутентификацию с <strong>@Model.ProviderDisplayName</strong>.
+            Пожалуйста, введите адрес электронной почты для этого сайта ниже и нажмите кнопку «Зарегистрироваться» для завершения
+            регистрации.
         </p>
 
         <div class="row">
@@ -26,7 +26,7 @@
                         <input asp-for="Input.Email" class="form-control" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
                 </form>
             </div>
         </div>

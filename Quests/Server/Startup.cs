@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Quests.Server.Data;
 using Quests.Server.Models;
 using Quests.Server.Repository;
@@ -42,7 +44,7 @@ namespace Quests.Server
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-             services.AddScoped<IQuestRepository, QuestRepository>();
+            services.AddScoped<IQuestRepository, QuestRepository>();
 
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -55,6 +57,7 @@ namespace Quests.Server
                 options.Password.RequiredLength = 6;
 
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
@@ -80,13 +83,13 @@ namespace Quests.Server
                 });
 
             services.AddControllersWithViews();
-            services.Configure<IdentityOptions>(options => 
+            services.Configure<IdentityOptions>(options =>
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
             services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -117,6 +120,50 @@ namespace Quests.Server
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
             });
+            CreateRoles(serviceProvider).Wait();
         }
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            //initializing custom roles 
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            string[] roleNames = { "Admin","Member" };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    //create the roles and seed them to the database: Question 1
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            //Here you could create a super user who will maintain the web app
+            var poweruser = new ApplicationUser
+            {
+
+                UserName = Configuration["AppSettings:UserName"],
+                Email = Configuration["AppSettings:UserEmail"],
+                FirstName = "Admin",
+                EmailConfirmed = true
+            };
+            //Ensure you have these values in your appsettings.json file
+            string userPWD = Configuration["AppSettings:UserPassword"];
+            var _user = await UserManager.FindByEmailAsync(Configuration["AppSettings:AdminUserEmail"]);
+
+            if (_user == null)
+            {
+                var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
+                if (createPowerUser.Succeeded)
+                {
+                    //here we tie the new user to the role
+                    await UserManager.AddToRoleAsync(poweruser, "Admin");
+
+                }
+            }
+        }
+
     }
 }
