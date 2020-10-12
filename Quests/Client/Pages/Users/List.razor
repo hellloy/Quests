@@ -1,0 +1,232 @@
+﻿@page "/users/list"
+@using Quests.Shared.VM
+@using Quests.Client.Services
+@using System.Globalization
+@inject IUsersDataService UsersDataService;
+@inject IJSRuntime JsRuntime
+@using System.Threading
+
+<div class="card card-custom gutter-b">
+    <div class="card-body">
+        <div class="input-icon">
+            <input type="text" class="form-control" placeholder="Поиск..." @bind-value="@SearchTerm" @bind-value:event="oninput" @onkeyup="SearchChanged" />
+            <span><i class="flaticon2-search-1 text-muted"></i></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var user in UsersVm)
+    {
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+            <!--begin::Card-->
+            <div class="card card-custom gutter-b card-stretch">
+                <!--begin::Body-->
+                <div class="card-body pt-4">
+
+                    <!--begin::User-->
+                    <div class="d-flex align-items-end mb-7">
+                        <!--begin::Pic-->
+                        <div class="d-flex align-items-center">
+                            <!--begin::Pic-->
+                            <div class="flex-shrink-0 mr-4 mt-lg-0 mt-3">
+                                <div class="symbol symbol-circle symbol-lg-75">
+                                    <img src="@user.Img" alt="image" />
+                                </div>
+                                <div class="symbol symbol-lg-75 symbol-circle symbol-primary d-none">
+                                    <span class="font-size-h3 font-weight-boldest">JM</span>
+                                </div>
+                            </div>
+                            <!--end::Pic-->
+                            <!--begin::Title-->
+                            <div class="d-flex flex-column">
+                                <a href="#" class="text-dark font-weight-bold text-hover-primary font-size-h4 mb-0">@user.UserName</a>
+                            </div>
+                            <!--end::Title-->
+                        </div>
+                        <!--end::Title-->
+                    </div>
+                    <!--end::User-->
+                    <!--begin::Info-->
+                    <div class="mb-7">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Имя:</span>
+                            <span class="text-muted">@user.Name</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-cente my-1">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Роль:</span>
+                            <span class="text-muted text-hover-primary">@user.RoleName</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Очки:</span>
+                            <span class="text-muted font-weight-bold">@user.Points</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Телефон:</span>
+                            <span class="text-muted font-weight-bold">@user.Phone</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Логин:</span>
+                            <span class="text-muted font-weight-bold">@user.UserName</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Последний вход:</span>
+                            <span class="text-muted font-weight-bold">
+                                @if (user.LatestSign.HasValue)
+                                {
+                                    @user.LatestSign.Value.ToString(CultureInfo.CurrentUICulture)
+                                }
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Активный квест:</span>
+                            <span class="text-muted font-weight-bold">@user.ActiveQuestId</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-dark-75 font-weight-bolder mr-2">Статус квеста:</span>
+                            <span class="text-muted font-weight-bold">@user.ActiveStateStatus %</span>
+                        </div>
+                    </div>
+                    <!--end::Info-->
+
+
+                    <a href="#" class="btn btn-primary btn-shadow btn-icon mr-2"><i class="flaticon2-information"></i></a>
+                    <button @onclick="()=>SelectEditUser(user.Id)" class="btn btn-warning btn-shadow btn-icon mr-2"><i class="flaticon2-gear"></i></button>
+                    <a href="#" class="btn btn-danger btn-shadow btn-icon mr-2"><i class="flaticon2-trash"></i></a>
+                </div>
+                <!--end::Body-->
+            </div>
+            <!--end::Card-->
+        </div>
+    }
+</div>
+
+
+@if (_showModal)
+{
+    <div class="modal show" id="myModal" style="display:block" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Редактирование пользователя</h4>
+                    <button type="button" class="close" @onclick="@ModalCancel">&times;</button>
+                </div>
+                <EditForm Model="@_userVm" OnValidSubmit="@HandleValidSubmit">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                            <DataAnnotationsValidator />
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Изображение</label>
+                                <div class="col-lg-3">
+                                    <InputImageCropper  @bind-Image="@img" OldImage="@_userVm.Img" Height="100px" ></InputImageCropper>
+                                    <ValidationMessage For="@(() => _userVm.Img)" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Имя </label>
+                                <div class="col-lg-9">
+                                    <InputText @bind-Value="_userVm.Name" placeholder="Введите Имя:" class="form-control" />
+                                    <ValidationMessage For="@(() => _userVm.Name)" />
+                                </div>
+                                </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Телефон </label>
+                                <div class="col-lg-9">
+                                    <InputText @bind-Value="_userVm.Phone" placeholder="Введите телефон:" class="form-control" />
+                                    <ValidationMessage For="@(() => _userVm.Phone)" />
+                                </div>
+                                    
+                                </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Очки </label>
+                                <div class="col-lg-9">
+                                    <InputNumber @bind-Value="_userVm.Points" placeholder="Введите очки:" class="form-control" />
+                                    <ValidationMessage For="@(() => _userVm.Points)" />
+                                </div>
+                                
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Роль </label>
+                                <div class="col-lg-9">
+                                    <InputSelect @bind-Value="_userVm.RoleName" class="form-control">
+                                        <option value="Member">Member</option>
+                                        <option value="Admin">Admin</option>
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => _userVm.Points)" />
+                                </div>
+                               
+                            </div>
+
+
+                            </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn" @onclick="@ModalCancel">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Ок</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private Timer _timer;
+    public string SearchTerm { get; set; }
+    private List<UserVm> UsersVm { get; set; } = new List<UserVm>();
+    private List<UserVm> Users { get; set; } = new List<UserVm>();
+    private UserVm _userVm = new UserVm();
+    bool _showModal = false;
+    private string img = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUsers();
+
+    }
+
+    private void SearchChanged()
+    {
+        _timer?.Dispose();
+        _timer = new Timer(OnTimerElapsed, null, 500, 0);
+    }
+
+
+    private void OnTimerElapsed(object sender)
+    {
+        UsersVm = Users.Where(t =>
+            t.UserName.Contains(SearchTerm) ||
+            t.Name.Contains(SearchTerm) ||
+            t.Phone.Contains(SearchTerm))
+        .ToList();
+        _timer.Dispose();
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+       await UsersDataService.Update(_userVm, img);
+        await GetUsers();
+        _showModal = false;
+    }
+
+    private void SelectEditUser(string id)
+    {
+        _userVm = UsersVm.SingleOrDefault(x => x.Id == id);
+        _showModal = true;
+    }
+
+    void ModalCancel() => _showModal = false;
+
+    async Task GetUsers()
+    {
+        Users = await UsersDataService.Get();
+        UsersVm = Users;
+    }
+
+}

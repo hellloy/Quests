@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Quests.Server.Models;
 using Quests.Shared.Entities.Models;
+using Quests.Shared.VM;
 
 namespace Quests.Server.Data
 {
@@ -20,5 +21,6 @@ namespace Quests.Server.Data
         public DbSet<QuestCategory> QuestCategories { get; set; }
         public DbSet<MyQuest> MyQuests { get; set; }
         public DbSet<MyQuestStep> MyQuestSteps { get; set; }
+
     }
 }

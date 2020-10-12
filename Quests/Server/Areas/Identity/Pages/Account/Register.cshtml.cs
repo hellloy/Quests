@@ -85,7 +85,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email,FirstName = Input.FirstName,PhoneNumber = Input.Phone};
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email,FirstName = Input.FirstName,PhoneNumber = Input.Phone, LastLogin = DateTime.Now};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

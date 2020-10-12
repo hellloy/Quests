@@ -1,4 +1,5 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -61,7 +62,13 @@ namespace Quests.Server
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => {
+                    options.IdentityResources["openid"].UserClaims.Add("role");
+                    options.ApiResources.Single().UserClaims.Add("role");
+                });
+
+            // Need to do this as it maps "role" to ClaimTypes.Role and causes issues
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
             services.AddAuthentication()
                 .AddIdentityServerJwt()

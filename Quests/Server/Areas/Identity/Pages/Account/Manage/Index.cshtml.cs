@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Quests.Server.Models;
 using Microsoft.AspNetCore.Identity;
@@ -22,7 +19,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        [Display(Name = "Имя пользователя")]
         public string Username { get; set; }
 
         [TempData]
@@ -34,20 +31,28 @@ namespace Quests.Server.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Номер телефона")]
             public string PhoneNumber { get; set; }
+            
+            [Display(Name = "Имя")]
+            public string FirstName { get; set; }
+            public string Avatar { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var firstName = user.FirstName;
+            var avatar = user.Img;
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = firstName,
+                Avatar = avatar
             };
         }
 
@@ -84,13 +89,17 @@ namespace Quests.Server.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Неожиданная ошибка при попытке установить номер телефона.";
                     return RedirectToPage();
                 }
             }
 
+            user.FirstName = Input.FirstName;
+            user.Img = Input.Avatar;
+            
+
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Ваш профиль был обновлен";
             return RedirectToPage();
         }
     }

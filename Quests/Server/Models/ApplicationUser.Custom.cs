@@ -19,10 +19,12 @@ namespace Quests.Server.Models
         public int Points { get; set; } = 0;
 
         [DisplayName("Аватар")] 
-        public string Img { get; set; }
+        public string Img { get; set; } = "assets/media/users/blank.png";
         [Required] 
         public bool Confidentiality { get; set; } = false;
         public DateTime? LastLogin { get; set; }
-        public string ActiveQuest { get; set; } = "";
+        public int ActiveQuest { get; set; }
+        public int ActiveQuestStatus { get; set; }
+        public string RoleName { get; set; }
     }
 }

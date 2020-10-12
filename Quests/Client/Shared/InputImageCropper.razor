@@ -8,7 +8,7 @@
 
 
 <div class="image-input image-input-outline col-12 p-0" id="quest_image">
-    <div class=" image-input-wrapper img-fluid imgInput" style="width: 100%; height: 360px;background-image: url(@OldImage)"></div>
+    <div class=" image-input-wrapper img-fluid imgInput" style="width: @Width; height: @Height;background-image: url(@OldImage)"></div>
 
     <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Выбрать изображение">
         <i class="fa fa-pen icon-sm text-muted"></i>
@@ -20,7 +20,6 @@
     <span @onclick="@(e=>OnImageChanged(""))" class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Удалить изображение">
         <i class="ki ki-bold-close icon-xs text-muted"></i>
     </span>
-    <span id="test"class="form-text text-muted">Настройте изображение</span>
 
 </div>
 
@@ -60,6 +59,10 @@
     [Parameter]
     public string OldImage { get; set; }
     [Parameter]
+    public string Height { get; set; } = "360px";
+    [Parameter]
+    public string Width  { get; set; } = "100%";
+    [Parameter]
     public EventCallback<string> ImageChanged { get; set; }
 
     async Task HandleSelection(IFileListEntry[] files)
@@ -76,7 +79,7 @@
 
             Image = $"data:{format};base64,{Convert.ToBase64String(ms.ToArray())}";
         }
-       await OnImageChanged(Image);
+        await OnImageChanged(Image);
     }
 
 
