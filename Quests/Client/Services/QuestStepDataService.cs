@@ -23,7 +23,7 @@ namespace Quests.Client.Services
         Task<QuestStep> Get(int id);
         Task<QuestStep> Add(QuestStep questStep, string img);
         Task<QuestStep> Update(QuestStep questStep, string img);
-        Task Delete(int id);
+        Task<bool> Delete(int id);
 
 
     }
@@ -191,9 +191,9 @@ namespace Quests.Client.Services
             return questStep;
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            await _sweetAlertService.FireAsync(new SweetAlertOptions
+           var result = await _sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Вы уверены?",
                 Text = "Вы не сможете восстановить этот этап!",
@@ -201,35 +201,33 @@ namespace Quests.Client.Services
                 ShowCancelButton = true,
                 ConfirmButtonText = "Да, удалить этап!",
                 CancelButtonText = "Нет, отменить удаление"
-            }).ContinueWith(swalTask =>
-            {
-                SweetAlertResult result = swalTask.Result;
-                if (!string.IsNullOrEmpty(result.Value))
-                {
-                    
-                    _http.DeleteAsync("api/QuestSteps/" + id);
-
-
-                    _sweetAlertService.FireAsync(
-                        "Удалено",
-                        "Этап был удачно удален",
-                        SweetAlertIcon.Success
-                    );
-
-                }
-                else if (result.Dismiss == DismissReason.Cancel)
-                {
-
-                    _sweetAlertService.FireAsync(
-                        "Отмена",
-                        "Удаление этапа было отменено",
-                        SweetAlertIcon.Error
-
-                    );
-                }
             });
-            
+               
+           if (!string.IsNullOrEmpty(result.Value))
+           {
+                    
+              await _http.DeleteAsync("api/QuestSteps/" + id);
 
+
+              await _sweetAlertService.FireAsync(
+                   "Удалено",
+                   "Этап был удачно удален",
+                   SweetAlertIcon.Success
+               );
+              return true;
+           }
+           else if (result.Dismiss == DismissReason.Cancel)
+           {
+
+              await _sweetAlertService.FireAsync(
+                   "Отмена",
+                   "Удаление этапа было отменено",
+                   SweetAlertIcon.Error
+
+               );
+           }
+
+           return false;
         }
 
     }

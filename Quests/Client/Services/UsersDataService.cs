@@ -12,11 +12,13 @@ namespace Quests.Client.Services
 {
     public interface IUsersDataService
     {
-        Task<List<UserVm>> Get();
+        Task<UsersVMQuests> Get();
+        Task<UserVm> GetUserInfo();
         Task<UserVm> Update(UserVm userVm, string img);
-        Task Delete(string id);
+        Task<bool> Delete(string id);
     }
-    public class UsersDataService:IUsersDataService
+
+    public class UsersDataService : IUsersDataService
     {
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _http;
@@ -29,7 +31,9 @@ namespace Quests.Client.Services
             state = "danger",
             message = "Идет загрузка данных..."
         };
-        public UsersDataService(IJSRuntime jsRuntime, HttpClient http, IMessagesService messagesService, SweetAlertService sweetAlertService)
+
+        public UsersDataService(IJSRuntime jsRuntime, HttpClient http, IMessagesService messagesService,
+            SweetAlertService sweetAlertService)
         {
             _jsRuntime = jsRuntime;
             _http = http;
@@ -37,13 +41,13 @@ namespace Quests.Client.Services
             _sweetAlertService = sweetAlertService;
         }
 
-        public async Task<List<UserVm>> Get()
+        public async Task<UsersVMQuests> Get()
         {
-            var users = new List<UserVm>();
+            var usersVMQuests = new UsersVMQuests();
             await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
             try
             {
-                users = await _http.GetFromJsonAsync<List<UserVm>>("api/users" );
+                usersVMQuests = await _http.GetFromJsonAsync<UsersVMQuests>("api/users");
             }
             catch (Exception e)
             {
@@ -51,7 +55,24 @@ namespace Quests.Client.Services
             }
 
             await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
-            return users;
+            return usersVMQuests;
+        }
+
+        public async Task<UserVm> GetUserInfo()
+        {
+            var user = new UserVm();
+            await _jsRuntime.InvokeVoidAsync("KTApp.blockPage", _option);
+            try
+            {
+                user = await _http.GetFromJsonAsync<UserVm>("api/users/0");
+            }
+            catch (Exception e)
+            {
+                await _messagesService.ShowError("Error", e.Message);
+            }
+
+            await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
+            return user;
         }
 
         public async Task<UserVm> Update(UserVm userVm, string img)
@@ -67,7 +88,8 @@ namespace Quests.Client.Services
                 }
                 else
                 {
-                    await _messagesService.ShowWarning("Внимание", "Что-то пошло не так, при загрузке изображения. Попробуйте другой файл");
+                    await _messagesService.ShowWarning("Внимание",
+                        "Что-то пошло не так, при загрузке изображения. Попробуйте другой файл");
                 }
             }
 
@@ -83,9 +105,9 @@ namespace Quests.Client.Services
             return userVm;
         }
 
-        public async Task Delete(string id)
+        public async Task<bool> Delete(string id)
         {
-            await _sweetAlertService.FireAsync(new SweetAlertOptions
+            var result = await _sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Вы уверены?",
                 Text = "Вы не сможете восстановить этого пользователя!",
@@ -93,33 +115,28 @@ namespace Quests.Client.Services
                 ShowCancelButton = true,
                 ConfirmButtonText = "Да, удалить пользователя!",
                 CancelButtonText = "Нет, отменить удаление"
-            }).ContinueWith(swalTask =>
-            {
-                SweetAlertResult result = swalTask.Result;
-                if (!string.IsNullOrEmpty(result.Value))
-                {
-                    
-                    _http.DeleteAsync("api/users/" + id);
-
-
-                    _sweetAlertService.FireAsync(
-                        "Удалено",
-                        "Пользователь был удачно удален",
-                        SweetAlertIcon.Success
-                    );
-
-                }
-                else if (result.Dismiss == DismissReason.Cancel)
-                {
-
-                    _sweetAlertService.FireAsync(
-                        "Отмена",
-                        "Удаление пользователя было отменено",
-                        SweetAlertIcon.Error
-
-                    );
-                }
             });
+
+            if (!string.IsNullOrEmpty(result.Value))
+            {
+                await _http.DeleteAsync("api/users/" + id);
+                await _sweetAlertService.FireAsync(
+                    "Удалено",
+                    "Пользователь был удачно удален",
+                    SweetAlertIcon.Success
+                );
+                return true;
+            }
+            else if (result.Dismiss == DismissReason.Cancel)
+            {
+                await _sweetAlertService.FireAsync(
+                    "Отмена",
+                    "Удаление пользователя было отменено",
+                    SweetAlertIcon.Error
+                );
+                
+            }
+            return false;
         }
     }
 }

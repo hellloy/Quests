@@ -26,9 +26,24 @@ namespace Quests.Server.Controllers
             _userManager = userManager;
         }
 
+        
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserVm>> GetUserInfo()
+        {
+            
+            var user = await _userManager.GetUserAsync(User);
+            var userVm = new UserVm
+            {
+                Img = user.Img,
+                Points = user.Points,
+                Phone = user.PhoneNumber,
+                Name = user.FirstName,
+            };
+            return userVm;
+        }
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserVm>>> GetUserVm()
+        public async Task<ActionResult<UsersVMQuests>> GetUserVm()
         {
             var users = await _context.Users.Select(x => new UserVm
             {
@@ -43,7 +58,21 @@ namespace Quests.Server.Controllers
                 ActiveStateStatus = x.ActiveQuestStatus,
                 RoleName = x.RoleName
             }).ToListAsync();
-            return users;
+
+            var quests = await _context.MyQuests
+                    .Where(p=> users.Select(u=>u.Id).Contains(p.UserId))
+                .Select(x => new UserQuest
+            {
+                UserId = x.UserId,
+                Name = x.Quest.Name,
+                City = x.Quest.City,
+                Status = x.Status,
+                Price = x.Quest.Price,
+                PurchaseDateTime = x.PurchaseDateTime
+            }).ToListAsync();
+            var usersVmQuests = new UsersVMQuests {Users = users, Quests = quests};
+
+            return usersVmQuests;
         }
 
         
@@ -74,7 +103,7 @@ namespace Quests.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<UserVm>> DeleteUserVm(string id)
         {
-            var user = _userManager.FindByIdAsync(id).Result;
+            var user =  await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {

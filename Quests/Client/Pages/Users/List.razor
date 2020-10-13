@@ -90,9 +90,9 @@
                     <!--end::Info-->
 
 
-                    <a href="#" class="btn btn-primary btn-shadow btn-icon mr-2"><i class="flaticon2-information"></i></a>
+                    <button @onclick="()=>GetUserQuest(user.Id)" class="btn btn-primary btn-shadow btn-icon mr-2"><i class="flaticon2-information"></i></button>
                     <button @onclick="()=>SelectEditUser(user.Id)" class="btn btn-warning btn-shadow btn-icon mr-2"><i class="flaticon2-gear"></i></button>
-                    <a href="#" class="btn btn-danger btn-shadow btn-icon mr-2"><i class="flaticon2-trash"></i></a>
+                    <button @onclick="()=>DeleteUser(user.Id)" class="btn btn-danger btn-shadow btn-icon mr-2"><i class="flaticon2-trash"></i></button>
                 </div>
                 <!--end::Body-->
             </div>
@@ -122,7 +122,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Изображение</label>
                                 <div class="col-lg-3">
-                                    <InputImageCropper  @bind-Image="@img" OldImage="@_userVm.Img" Height="100px" ></InputImageCropper>
+                                    <InputImageCropper @bind-Image="@img" OldImage="@_userVm.Img" Height="100px"></InputImageCropper>
                                     <ValidationMessage For="@(() => _userVm.Img)" />
                                 </div>
                             </div>
@@ -132,22 +132,22 @@
                                     <InputText @bind-Value="_userVm.Name" placeholder="Введите Имя:" class="form-control" />
                                     <ValidationMessage For="@(() => _userVm.Name)" />
                                 </div>
-                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Телефон </label>
                                 <div class="col-lg-9">
                                     <InputText @bind-Value="_userVm.Phone" placeholder="Введите телефон:" class="form-control" />
                                     <ValidationMessage For="@(() => _userVm.Phone)" />
                                 </div>
-                                    
-                                </div>
+
+                            </div>
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Очки </label>
                                 <div class="col-lg-9">
                                     <InputNumber @bind-Value="_userVm.Points" placeholder="Введите очки:" class="form-control" />
                                     <ValidationMessage For="@(() => _userVm.Points)" />
                                 </div>
-                                
+
                             </div>
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Роль </label>
@@ -158,11 +158,11 @@
                                     </InputSelect>
                                     <ValidationMessage For="@(() => _userVm.Points)" />
                                 </div>
-                               
+
                             </div>
 
 
-                            </div>
+                        </div>
                     </div>
                     <!-- Modal footer -->
                     <div class="modal-footer">
@@ -175,13 +175,70 @@
     </div>
 }
 
+@if (_showModal1)
+{
+    <div class="modal show" id="myModal1" style="display:block" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Список квестов пользователя</h4>
+                    <button type="button" class="close" @onclick="@ModalCancel1">&times;</button>
+                </div>
+                
+                    <!-- Modal body -->
+                <div class="modal-body" style="height: 300px;">
+                    <div data-scroll="true" data-height="300">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Дата покупки</th>
+                                    <th scope="col">Название</th>
+                                    <th scope="col">Город</th>
+                                    <th scope="col">Стоимость</th>
+                                    <th scope="col">Статус</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var quest in UserQuests)
+                                {
+                                    <tr>
+                                        <td>@quest.PurchaseDateTime.ToString(CultureInfo.CurrentUICulture)</td>
+                                        <td>@quest.Name</td>
+                                        <td>@quest.City</td>
+                                        <td>@quest.Price</td>
+                                        <td>@quest.Status</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                           
+                        </div>
+
+
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @onclick="@ModalCancel1">Ок</button>
+                    </div>
+                
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     private Timer _timer;
     public string SearchTerm { get; set; }
     private List<UserVm> UsersVm { get; set; } = new List<UserVm>();
-    private List<UserVm> Users { get; set; } = new List<UserVm>();
+    private List<UserQuest> UserQuests { get; set; } = new List<UserQuest>();
+    private UsersVMQuests UsersVmQuests { get; set; } = new UsersVMQuests();
     private UserVm _userVm = new UserVm();
     bool _showModal = false;
+    bool _showModal1 = false;
     private string img = "";
 
     protected override async Task OnInitializedAsync()
@@ -199,7 +256,7 @@
 
     private void OnTimerElapsed(object sender)
     {
-        UsersVm = Users.Where(t =>
+        UsersVm = UsersVmQuests.Users.Where(t =>
             t.UserName.Contains(SearchTerm) ||
             t.Name.Contains(SearchTerm) ||
             t.Phone.Contains(SearchTerm))
@@ -210,7 +267,7 @@
 
     private async Task HandleValidSubmit()
     {
-       await UsersDataService.Update(_userVm, img);
+        await UsersDataService.Update(_userVm, img);
         await GetUsers();
         _showModal = false;
     }
@@ -222,11 +279,28 @@
     }
 
     void ModalCancel() => _showModal = false;
+    void ModalCancel1() => _showModal1 = false;
 
     async Task GetUsers()
     {
-        Users = await UsersDataService.Get();
-        UsersVm = Users;
+        UsersVmQuests = await UsersDataService.Get();
+        UsersVm = UsersVmQuests.Users;
+    }
+
+    async Task DeleteUser(string id)
+    {
+        var result = await UsersDataService.Delete(id);
+        if (result)
+        {
+            await GetUsers();
+        }
+
+    }
+
+    private void GetUserQuest(string id)
+    {
+        UserQuests = UsersVmQuests.Quests.Where(x => x.UserId == id).ToList();
+        _showModal1 = true;
     }
 
 }

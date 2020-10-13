@@ -22,11 +22,11 @@ namespace Quests.Client.Services
         Task<Quest> Get(int id);
         Task<Quest> Add(Quest quest, string img);
         Task<Quest> Update(Quest quest, string img);
-        Task Delete(int id);
+        Task<bool> Delete(int id);
 
         Task<List<QuestCategory>> GetAllQuestCategories();
         Task<QuestCategory> AddQuestCategory(QuestCategory questCategory);
-        Task DeleteQuestCategory(int id);
+        Task<bool> DeleteQuestCategory(int id);
 
     }
     public class QuestDataService : IQuestDataService
@@ -174,9 +174,9 @@ namespace Quests.Client.Services
             return quest;
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            await _sweetAlertService.FireAsync(new SweetAlertOptions
+           var result = await _sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Вы уверены?",
                 Text = "Вы не сможете восстановить этот квест!",
@@ -184,34 +184,33 @@ namespace Quests.Client.Services
                 ShowCancelButton = true,
                 ConfirmButtonText = "Да, удалить квест!",
                 CancelButtonText = "Нет, отменить удаление"
-            }).ContinueWith(swalTask =>
-            {
-                SweetAlertResult result = swalTask.Result;
-                if (!string.IsNullOrEmpty(result.Value))
-                {
-                    
-                    _http.DeleteAsync("api/Quests/" + id);
-
-
-                    _sweetAlertService.FireAsync(
-                        "Удалено",
-                        "Квест был удачно удален",
-                        SweetAlertIcon.Success
-                    );
-
-                }
-                else if (result.Dismiss == DismissReason.Cancel)
-                {
-
-                    _sweetAlertService.FireAsync(
-                        "Отмена",
-                        "Удаление квеста было отменено",
-                        SweetAlertIcon.Error
-
-                    );
-                }
             });
-            
+                
+           if (!string.IsNullOrEmpty(result.Value))
+           {
+                    
+              await _http.DeleteAsync("api/Quests/" + id);
+
+
+              await _sweetAlertService.FireAsync(
+                   "Удалено",
+                   "Квест был удачно удален",
+                   SweetAlertIcon.Success
+               );
+              return true;
+           }
+           else if (result.Dismiss == DismissReason.Cancel)
+           {
+
+              await _sweetAlertService.FireAsync(
+                   "Отмена",
+                   "Удаление квеста было отменено",
+                   SweetAlertIcon.Error
+
+               );
+           }
+
+           return false;
 
         }
 
@@ -248,22 +247,23 @@ namespace Quests.Client.Services
             return questCategory;
         }
 
-        public async Task DeleteQuestCategory(int id)
+        public async Task<bool> DeleteQuestCategory(int id)
         {
             var res = await _http.DeleteAsync("api/QuestCategories/" + id);
             if (res.IsSuccessStatusCode)
             {
-                _sweetAlertService.FireAsync(
+                await _sweetAlertService.FireAsync(
                     "Удалено",
                     "Категория была удалена",
                     SweetAlertIcon.Success
                 );
+                return true;
             }
             else
             {
                 if(res.StatusCode == HttpStatusCode.Conflict)
                 {
-                    _sweetAlertService.FireAsync(
+                    await _sweetAlertService.FireAsync(
                         "Не могу удалить категорию",
                         "В текущей категории есть квесты, переместите квесты и попробуйте ещё раз.",
                         SweetAlertIcon.Error
@@ -271,15 +271,16 @@ namespace Quests.Client.Services
                 }
                 else
                 {
-                    _sweetAlertService.FireAsync(
+                  await  _sweetAlertService.FireAsync(
                         "Ошибка при удалении",
                         "При удалении произошла ошибка, обратитесь к Администратору",
                         SweetAlertIcon.Error
                     );
                 }
             }
-            
-            
+
+            return false;
+
         }
 
         

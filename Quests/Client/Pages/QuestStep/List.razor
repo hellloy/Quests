@@ -187,8 +187,12 @@
 
     private async Task Delete(int id)
     {
-        await QuestStepDataService.Delete(id);
-        await GetQuest();
+        var result = await QuestStepDataService.Delete(id);
+        if (result)
+        {
+            await GetQuest();
+        }
+
     }
 
     private void SortCol(string columnName)
@@ -224,7 +228,7 @@
         return _isSortedAscending ? "fa-sort-up" : "fa-sort-down";
     }
 
-    
+
     public class VM : QuestStep
     {
         public string QuestName { get; set; }

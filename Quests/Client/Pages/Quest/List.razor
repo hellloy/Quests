@@ -154,8 +154,12 @@
 
     private async Task Delete(int id)
     {
-        await QuestDataService.Delete(id);
-        await GetQuest();
+        var result = await QuestDataService.Delete(id);
+        if (result)
+        {
+            await GetQuest();
+        }
+
     }
 
 }
