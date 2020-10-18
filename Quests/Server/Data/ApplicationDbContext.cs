@@ -1,4 +1,4 @@
-﻿using IdentityServer4.EntityFramework.Options;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -21,6 +21,7 @@ namespace Quests.Server.Data
         public DbSet<QuestCategory> QuestCategories { get; set; }
         public DbSet<MyQuest> MyQuests { get; set; }
         public DbSet<MyQuestStep> MyQuestSteps { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
 
     }
 }

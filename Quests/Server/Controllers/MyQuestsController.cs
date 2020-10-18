@@ -51,7 +51,8 @@ namespace Quests.Server.Controllers
                     Id = item.Id,
                     StageCount = steps.Count(x => x.MyQuestId == item.Id),
                     CurrentProgress = GetCurrentProgress(steps),
-                    Img = item.Quest.Img
+                    Img = item.Quest.Img,
+                    QuestId = item.QuestId
                 };
                 myQuestsVms.Add(myQuestsVm);
             }
@@ -143,7 +144,15 @@ namespace Quests.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<MyQuest>> PostMyQuest(Quest quest)
         {
+
+            var dbQuest = await _context.Quests.FindAsync(quest.Id);
             var currentUserId = _userManager.GetUserId(User);
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == currentUserId);
+
+            if (dbQuest.Price > user.Points)
+            {
+                return NotFound();
+            }
 
             var existsQuest = await _context.MyQuests.FirstOrDefaultAsync(x => x.UserId == currentUserId && x.QuestId == quest.Id);
 
@@ -177,6 +186,9 @@ namespace Quests.Server.Controllers
 
                 await _context.MyQuestSteps.AddRangeAsync(myQuestSteps);
                 await _context.SaveChangesAsync();
+
+                user.Points -= quest.Price;
+                await _userManager.UpdateAsync(user);
 
                 return CreatedAtAction("GetMyQuest", new { id = myQuest.Id }, myQuest);
             }

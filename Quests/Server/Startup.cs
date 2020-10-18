@@ -61,8 +61,10 @@ namespace Quests.Server
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => {
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
+                {
                     options.IdentityResources["openid"].UserClaims.Add("role");
                     options.ApiResources.Single().UserClaims.Add("role");
                 });
@@ -71,7 +73,7 @@ namespace Quests.Server
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
             services.AddAuthentication()
-                .AddIdentityServerJwt()
+                .AddIdentityServerJwt();
                 //.AddGoogle(options =>
                 //{
                 //    IConfigurationSection googleAuthNSection =
@@ -80,14 +82,14 @@ namespace Quests.Server
                 //    options.ClientId = googleAuthNSection["ClientId"];
                 //    options.ClientSecret = googleAuthNSection["ClientSecret"];
                 //})
-                .AddVkontakte(options =>
-                {
-                    IConfigurationSection vkAuthNSection =
-                        Configuration.GetSection("Authentication:VK");
+                //.AddVkontakte(options =>
+                //{
+                //    IConfigurationSection vkAuthNSection =
+                //        Configuration.GetSection("Authentication:VK");
 
-                    options.ClientId = vkAuthNSection["ClientId"];
-                    options.ClientSecret = vkAuthNSection["ClientSecret"];
-                });
+                //    options.ClientId = vkAuthNSection["ClientId"];
+                //    options.ClientSecret = vkAuthNSection["ClientSecret"];
+                //});
 
             services.AddControllersWithViews();
             services.Configure<IdentityOptions>(options =>

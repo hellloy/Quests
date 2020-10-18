@@ -97,11 +97,11 @@ namespace Quests.Client.Services
             await _jsRuntime.InvokeVoidAsync("KTApp.unblockPage");
             if (response.IsSuccessStatusCode)
             {
-                await _messagesService.ShowSuccess("Квест", "был удачно обновлен");
+                await _messagesService.ShowSuccess("Пользователь", "был удачно обновлен");
                 return userVm;
             }
 
-            await _messagesService.ShowError("Error", "При обновлении квеста произошла ошибка");
+            await _messagesService.ShowError("Error", "При обновлении пользователя произошла ошибка");
             return userVm;
         }
 

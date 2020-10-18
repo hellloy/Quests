@@ -1,8 +1,12 @@
 ﻿@page "/"
 @using Quests.Client.Services
+@using CurrieTechnologies.Razor.SweetAlert2
 @inject IQuestDataService QuestDataService
 @inject IMyQuestDataService MyQuestDataService
 @inject NavigationManager NavManager
+@inject IUsersDataService UsersDataService
+@inject SweetAlertService SweetAlertService
+
 
 <div class="row">
     @foreach (var quest in Quests)
@@ -65,7 +69,44 @@
 
     protected async Task BuyGame(Quests.Shared.Entities.Models.Quest quest)
     {
-        await MyQuestDataService.Add(quest);
-        NavManager.NavigateTo("/myQuests/list");
+        var user = await UsersDataService.GetUserInfo();
+
+        if (quest.Price > user.Points)
+        {
+            var myQuests = await MyQuestDataService.Get();
+            if (myQuests.FirstOrDefault(x => x.QuestId == quest.Id) != null)
+            {
+                NavManager.NavigateTo("/myQuests/list");
+            }
+            else
+            {
+                NavManager.NavigateTo("/payment/" + (quest.Price - user.Points));
+            }
+
+        }
+
+        else
+        {
+
+
+            var result = await SweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Вы уверены?",
+                Text = "C вашего счета будет списано "+quest.Price+" очков",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Да, хочу пройти квест!",
+                CancelButtonText = "Нет, отменить игру"
+            });
+
+            if (!string.IsNullOrEmpty(result.Value))
+            {
+                await MyQuestDataService.Add(quest);
+                NavManager.NavigateTo("/myQuests/list");
+            }
+
+        }
+
+
     }
 }

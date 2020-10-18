@@ -10,6 +10,7 @@ namespace Quests.Shared.VM
         public int Points { get; set; }
         public int StageCount { get; set; }
         public int CurrentProgress { get; set; }
+        public int QuestId { get; set; }
         public MyQuestStatus Status { get; set; }
     }
 }

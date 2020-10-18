@@ -27,6 +27,7 @@ namespace Quests.Client
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Quests.ServerAPI"));
 
             builder.Services.AddApiAuthorization();
+
             builder.Services.AddTransient<IMessagesService,MessagesService>();
             builder.Services.AddTransient<IQuestDataService,QuestDataService>();
             builder.Services.AddTransient<IQuestStepDataService,QuestStepDataService>();

@@ -10,8 +10,8 @@ using Quests.Server.Data;
 namespace Quests.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201009151646_ChangeUserCustomRoleName")]
-    partial class ChangeUserCustomRoleName
+    [Migration("20201016073728_Invoices")]
+    partial class Invoices
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -326,6 +326,27 @@ namespace Quests.Server.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Quests.Server.Models.Invoice", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvoiceStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("Quests.Shared.Entities.Models.MyQuest", b =>

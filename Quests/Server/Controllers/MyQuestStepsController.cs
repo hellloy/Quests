@@ -2,24 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Quests.Server.Data;
+using Quests.Server.Models;
 using Quests.Shared.Entities.Models;
 using Quests.Shared.VM;
 
 namespace Quests.Server.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MyQuestStepsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MyQuestStepsController(ApplicationDbContext context)
+        public MyQuestStepsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
        
@@ -107,6 +113,9 @@ namespace Quests.Server.Controllers
 
             if (count > 1)
             {
+                var user = await _userManager.GetUserAsync(User);
+                user.Points += myQuestStep.Points;
+                await _userManager.UpdateAsync(user);
                 answerVm.Message = $"Поздравляем Вы прошли текущий этап! и заработали {myQuestStep.Points} баллов";
             }
             else

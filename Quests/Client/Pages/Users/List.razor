@@ -34,13 +34,13 @@
                                     <img src="@user.Img" alt="image" />
                                 </div>
                                 <div class="symbol symbol-lg-75 symbol-circle symbol-primary d-none">
-                                    <span class="font-size-h3 font-weight-boldest">JM</span>
+                                    <span class="font-size-h3 font-weight-boldest">@user.UserName.First()</span>
                                 </div>
                             </div>
                             <!--end::Pic-->
                             <!--begin::Title-->
                             <div class="d-flex flex-column">
-                                <a href="#" class="text-dark font-weight-bold text-hover-primary font-size-h4 mb-0">@user.UserName</a>
+                                <a  @onclick="()=>SelectEditUser(user.Id)" class="text-dark font-weight-bold text-hover-primary font-size-h4 mb-0 cursor-pointer">@user.UserName</a>
                             </div>
                             <!--end::Title-->
                         </div>

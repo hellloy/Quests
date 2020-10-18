@@ -140,6 +140,11 @@ app {
     background-position: center center;
 }
 
+input[type=number].no-spinner::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
         display: none;
