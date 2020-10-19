@@ -10885,10 +10885,11 @@ var KTLayoutQuickUser = function() {
     };
 }();
 
+
 // Webpack support
 if (typeof module !== 'undefined') {
 	module.exports = KTLayoutQuickUser;
-}
+    }
 
 "use strict";
 

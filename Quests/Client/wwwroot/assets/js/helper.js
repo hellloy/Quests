@@ -1,5 +1,6 @@
 ﻿"use strict";
 function BlazorInit(helper) {
+
     ////////////////////////////////////////////////////
     // Layout Base Partials(mandatory for core layout)//
     ////////////////////////////////////////////////////
@@ -68,7 +69,7 @@ function BlazorInit(helper) {
 
     // Init Quick User Panel
     KTLayoutQuickUser.init('kt_quick_user');
-
+    
     // Init Quick Search Panel
     KTLayoutQuickSearch.init('kt_quick_search');
 
@@ -82,4 +83,20 @@ function BlazorInit(helper) {
     KTLayoutSearchOffcanvas().init('kt_quick_search_offcanvas');
 
     helper.invokeMethodAsync("InvokeMethod",true);
+
+    function eventFire(el, etype){
+        if (el.fireEvent) {
+            el.fireEvent('on' + etype);
+        } else {
+            var evObj = document.createEvent('Events');
+            evObj.initEvent(etype, true, false);
+            el.dispatchEvent(evObj);
+        }
+    }
+
+    $('#kt_quick_user_toggle_mobile').click(function() {
+        eventFire(document.getElementById('kt_quick_user_toggle'), 'click');
+    });
 }
+
+
