@@ -73,23 +73,12 @@ namespace Quests.Server
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
             services.AddAuthentication()
-                .AddIdentityServerJwt();
-                //.AddGoogle(options =>
-                //{
-                //    IConfigurationSection googleAuthNSection =
-                //        Configuration.GetSection("Authentication:Google");
-
-                //    options.ClientId = googleAuthNSection["ClientId"];
-                //    options.ClientSecret = googleAuthNSection["ClientSecret"];
-                //})
-                //.AddVkontakte(options =>
-                //{
-                //    IConfigurationSection vkAuthNSection =
-                //        Configuration.GetSection("Authentication:VK");
-
-                //    options.ClientId = vkAuthNSection["ClientId"];
-                //    options.ClientSecret = vkAuthNSection["ClientSecret"];
-                //});
+                .AddIdentityServerJwt()
+                .AddVkontakte(options =>
+                {
+                    options.ClientId = "7408375";
+                    options.ClientSecret = "29G8M6GqpCGIKBPJlPz9";
+                });
 
             services.AddControllersWithViews();
             services.Configure<IdentityOptions>(options =>
