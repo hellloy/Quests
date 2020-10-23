@@ -11,7 +11,7 @@ namespace Quests.Server.Models
 {
     public partial class ApplicationUser
     {
-        [Required]
+        [Required (ErrorMessage = "Поле Имя обязательное")]
         [DisplayName("Имя")]
         public string FirstName { get; set; }
 

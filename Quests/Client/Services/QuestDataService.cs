@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Quests.Client.Features;
 using Quests.Shared.Entities.RequestFeatures;
 using Microsoft.AspNetCore.WebUtilities;
@@ -35,6 +36,7 @@ namespace Quests.Client.Services
         private readonly HttpClient _http;
         private readonly IMessagesService _messagesService;
         private readonly SweetAlertService _sweetAlertService;
+        private readonly NavigationManager NavigationManager;
 
         private readonly object _option = new
         {
@@ -43,12 +45,13 @@ namespace Quests.Client.Services
             message = "Идет загрузка данных..."
         };
 
-        public QuestDataService(IJSRuntime jsRuntime, HttpClient http, IMessagesService messagesService, SweetAlertService sweetAlertService)
+        public QuestDataService(IJSRuntime jsRuntime, HttpClient http, IMessagesService messagesService, SweetAlertService sweetAlertService, NavigationManager navigationManager)
         {
             _jsRuntime = jsRuntime;
             _http = http;
             _messagesService = messagesService;
             _sweetAlertService = sweetAlertService;
+            NavigationManager = navigationManager;
         }
 
         public async Task<PagingResponse<Quest>> Get(QuestParameters questParameters)
@@ -138,7 +141,8 @@ namespace Quests.Client.Services
             if (response.IsSuccessStatusCode)
             {
                 await _messagesService.ShowSuccess("Новый квест", "был удачно добавлен");
-                return await response.Content.ReadFromJsonAsync<Quest>();
+                NavigationManager.NavigateTo("/quest");
+                return quest;
             }
 
             await _messagesService.ShowError("Error", "При добавлении квеста произошла ошибка");
@@ -167,6 +171,7 @@ namespace Quests.Client.Services
             if (response.IsSuccessStatusCode)
             {
                 await _messagesService.ShowSuccess("Квест", "был удачно обновлен");
+                NavigationManager.NavigateTo("/quest");
                 return quest;
             }
 

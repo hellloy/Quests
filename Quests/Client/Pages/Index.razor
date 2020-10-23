@@ -12,7 +12,7 @@
     @foreach (var quest in Quests)
     {
         var detailsLink = "/quest/details/" + quest.Id;
-        <div class="col-xl-6">
+        <div class="col">
             <div class="card card-custom card-stretch gutter-b">
                 <!--begin::Card Body-->
                 <div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@quest.Img')">
@@ -24,7 +24,7 @@
                         <div class="card-body px-12 py-10">
                             <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@quest.Name</a></h3>
                             <div class="text-primary font-size-h4 mb-9">@quest.Price ₽</div>
-                            <div class="font-size-sm mb-8">@((MarkupString)quest.Description)</div>
+                            @*<div class="font-size-sm mb-8">@((MarkupString)quest.Description)</div>*@
                             <!--begin::Info-->
                             <div class="d-flex mb-3">
                                 <span class="text-dark-50 flex-root font-weight-bold">Время:</span>
@@ -38,14 +38,20 @@
                             <!--end::Info-->
                         </div>
                         <!--end::Card Body-->
-                        <div class="card-footer d-flex justify-content-between">
-                            <NavLink href="@detailsLink" class="btn btn-light-primary font-weight-bold" Match="NavLinkMatch.All">
-                                Подробно
-                            </NavLink>
-
-                            <button class="btn btn-outline-success font-weight-bold" @onclick="@(e=>BuyGame(quest))">
-                                Играть
-                            </button>
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <NavLink href="@detailsLink" class="btn btn-light-primary font-weight-bold btn-block mb-4 mb-xxl-0 mb-xl-0 mb-md-0" Match="NavLinkMatch.All">
+                                        Подробно
+                                    </NavLink>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-outline-success font-weight-bold btn-block" @onclick="@(e => BuyGame(quest))">
+                                        Играть
+                                    </button>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                     <!--end::Card-->

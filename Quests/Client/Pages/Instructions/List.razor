@@ -1,0 +1,116 @@
+﻿@page "/instructions"
+@inject IInstructionsDataService InstructionsDataService
+@inject IJSRuntime JsRuntime
+@using System.Threading
+@using Quests.Client.Services
+@using Quests.Shared.Entities.Models
+
+@if (InstructionsVm != null)
+{
+    <div class="card card-custom gutter-b">
+        <div class="card-body">
+            <div class="input-icon">
+                <input type="text" class="form-control" placeholder="Поиск..." @bind-value="@SearchTerm" @bind-value:event="oninput" @onkeyup="SearchChanged" />
+                <span><i class="flaticon2-search-1 text-muted"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        @foreach (var item in InstructionsVm)
+        {
+
+            var linkEdit = "/instructions/edit/" + @item.Id;
+            var linkShow = "/instructions/details/" + @item.Id;
+
+            <div class="col-12">
+                <div class="card card-custom card-stretch gutter-b">
+                    <!--begin::Card Body-->
+                    <div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@item.Img')">
+                        <!--begin::Image-->
+                        <!--end::Image-->
+                        <!--begin::Card-->
+                        <div class="card card-custom w-auto w-md-300px w-lg-auto w-xxl-400px ml-auto m-10">
+                            <!--begin::Card Body-->
+                            <div class="card-body px-12 py-10">
+                                <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@item.Title</a></h3>
+                            </div>
+                            <!--end::Card Body-->
+                            <div class="card-footer d-flex justify-content-between">
+                                <AuthorizeView Roles="Member">
+                                    <NavLink href="@linkShow" class="btn btn-primary btn-shadow btn-block">Подробно...</NavLink>
+                                </AuthorizeView>
+                                <AuthorizeView Roles="Admin">
+                                    <NavLink class="btn btn-primary btn-shadow btn-icon mr-2" href="@linkShow"><i class="flaticon2-information"></i></NavLink>
+                                    <NavLink class="btn btn-warning btn-shadow btn-icon mr-2" href="@linkEdit"><i class="flaticon2-gear"></i></NavLink>
+                                    <button class="btn btn-danger btn-shadow btn-icon mr-2" @onclick="@(() => DeleteNews(item.Id))"><i class="flaticon2-trash"></i></button>
+                                </AuthorizeView>
+                            </div>
+                        </div>
+                        <!--end::Card-->
+                    </div>
+                    <!--end::Card Body-->
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+}
+else
+{
+    <div class="card card-custom gutter-b">
+        <div class="card-body">
+            <h3>Ничего нет</h3>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    private Timer _timer;
+    public string SearchTerm { get; set; }
+
+    public List<Instruction> Instructions { get; set; } = null;
+    public List<Instruction> InstructionsVm { get; set; } = null;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetNewsRecords();
+        StateHasChanged();
+    }
+
+    async Task GetNewsRecords()
+    {
+        Instructions = await InstructionsDataService.Get();
+        InstructionsVm = Instructions;
+    }
+
+    private void SearchChanged()
+    {
+        _timer?.Dispose();
+        _timer = new Timer(OnTimerElapsed, null, 500, 0);
+    }
+
+
+    private void OnTimerElapsed(object sender)
+    {
+        InstructionsVm = Instructions.Where(t =>
+    t.Title.Contains(SearchTerm) ||
+    t.Description.Contains(SearchTerm)).ToList();
+
+        _timer.Dispose();
+        StateHasChanged();
+    }
+
+    private async Task DeleteNews(int id)
+    {
+        var result = await InstructionsDataService.Delete(id);
+        if (result)
+        {
+            await GetNewsRecords();
+        }
+    }
+}

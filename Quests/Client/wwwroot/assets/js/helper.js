@@ -95,7 +95,8 @@ function BlazorInit(helper) {
     }
 
     $('#kt_quick_user_toggle_mobile').click(function() {
-        eventFire(document.getElementById('kt_quick_user_toggle'), 'click');
+        eventFire(document.getElementById('kt_quick_user_toggle'), 'tap');
+       // $('#kt_quick_user_toggle').slideToggle();
     });
 }
 

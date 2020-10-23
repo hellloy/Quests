@@ -1,7 +1,35 @@
-@layout AuthLayout
+﻿@layout AuthLayout
 @page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action" />
+<RemoteAuthenticatorView Action="@Action">
+    <LoggingIn>
+        Вход в приложение...
+    </LoggingIn>
+    <CompletingLoggingIn>
+        Вход в приложение ....
+    </CompletingLoggingIn>
+    <CompletingLogOut>
+        Вы вышли из приложения...
+    </CompletingLogOut>
+    <LogOut>
+        Вы выходите из приложения...
+    </LogOut>
+    <LogOutSucceeded>
+        Вы вышли из приложения....
+    </LogOutSucceeded>
+    <UserProfile>
+        Профиль пользователя ...
+    </UserProfile>
+    <Registering>
+        Регистрация....
+    </Registering>
+    <LogInFailed>
+        Не удачный вход....
+    </LogInFailed>
+    <LogOutFailed>
+        Не удачный выход...
+    </LogOutFailed>
+</RemoteAuthenticatorView>
 
 @code{
     [Parameter] public string Action { get; set; }

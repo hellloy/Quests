@@ -72,13 +72,13 @@ namespace Quests.Server.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
-                ErrorMessage = $"Error from external provider: {remoteError}";
+                ErrorMessage = $"Ошибка от внешнего провайдера: {remoteError}";
                 return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information.";
+                ErrorMessage = "Ошибка загрузки внешней информации для входа.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
@@ -116,7 +116,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information during confirmation.";
+                ErrorMessage = "Ошибка загрузки внешней информации для входа во время подтверждения.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
@@ -142,7 +142,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                             protocol: Request.Scheme);
 
                         await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                            $"Подтвердите свой аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажать тут</a>.");
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)

@@ -48,20 +48,20 @@ namespace Quests.Server.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Поле Имя обязательно")]
             [Display(Name = "Ваше Имя")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле Телефон обязательно")]
             [Display(Name = "Номер телефона")]
             public string Phone { get; set; }
 
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Поле Email обязательно")]
+            [EmailAddress(ErrorMessage = "Поле Email не является действительным адресом электронной почты.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле Пароль обязательно")]
             [StringLength(100, ErrorMessage = "Пароль {0} должен содержать не менее {2} и не более {1} символов.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Пароль")]
@@ -99,8 +99,8 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Подтвердите ваш email",
+                        $"Подтвердите Ваш аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите тут</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

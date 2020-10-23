@@ -28,8 +28,8 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <!--begin::Group-->
                 <div class="form-group row">
-                    <label class="col-form-label col-3 text-lg-right text-left">Изображение:</label>
-                    <div class="col-9">
+                    <label class="col-form-label col-md-3 text-lg-right text-left">Изображение:</label>
+                    <div class="col-md-9">
                         <div class="image-input image-input-empty image-input-outline" id="kt_user_edit_avatar" style="background-image: url(@Model.Input.Avatar)">
                             <div class="image-input-wrapper"></div>
                             <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
@@ -49,16 +49,16 @@
                 <!--end::Group-->
                 <!--begin::Group-->
                 <div class="form-group row">
-                    <label class="col-form-label col-3 text-lg-right text-left" asp-for="Username"></label>
-                    <div class="col-9">
+                    <label class="col-form-label col-md-3 text-lg-right text-left" asp-for="Username"></label>
+                    <div class="col-md-9">
                         <input class="form-control form-control-lg form-control-solid" asp-for="Username"  disabled />
                     </div>
                 </div>
                 <!--end::Group-->
                 <!--begin::Group-->
                 <div class="form-group row">
-                    <label class="col-form-label col-3 text-lg-right text-left" asp-for="Input.PhoneNumber"></label>
-                    <div class="col-9">
+                    <label class="col-form-label col-md-3 text-lg-right text-left" asp-for="Input.PhoneNumber"></label>
+                    <div class="col-md-9">
                         <input class="form-control form-control-lg form-control-solid" asp-for="Input.PhoneNumber" />
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>
@@ -66,8 +66,8 @@
                 <!--end::Group-->
                 <!--begin::Group-->
                 <div class="form-group row">
-                    <label class="col-form-label col-3 text-lg-right text-left" asp-for="Input.FirstName"></label>
-                    <div class="col-9">
+                    <label class="col-form-label col-md-3 text-lg-right text-left" asp-for="Input.FirstName"></label>
+                    <div class="col-md-9">
                         <input class="form-control form-control-lg form-control-solid" asp-for="Input.FirstName" />
                         <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                     </div>

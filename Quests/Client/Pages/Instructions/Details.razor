@@ -1,0 +1,64 @@
+﻿@page "/instructions/details/{Id:int}"
+
+@using Quests.Client.Services
+@using Quests.Shared.Entities.Models
+@inject IInstructionsDataService InstructionsDataService
+
+
+<div class="flex-row-fluid ml-lg-8">
+    <!--begin::Section-->
+    <!--begin::Charts Widget 9-->
+    <!--begin::Card-->
+    <div class="card card-custom gutter-b gutter-b">
+        <div class="card-body d-flex flex-column flex-md-row flex-lg-column flex-xxl-row p-0 overflow-hidden">
+            <div class="d-flex flex-column flex-root" style="position: relative;">
+                <div class="m-11 d-flex align-items-end">
+                    <h3 class="font-size-h1 text-dark font-weight-bolder mr-3 mb-0">@Instruction.Title</h3>
+                </div>
+                <div class="bgi-no-repeat bgi-position-center bgi-size-cover h-500px  mw-100 w-100% rounded-bottom" style="background-image: url('@Instruction.Img')"></div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!--end:: Card-->
+    <!--end:: Charts Widget 9-->
+  
+    <div class="row">
+        <div class="col">
+            <!--begin::Stats Widget 33-->
+            <!--begin::Card-->
+            <div class="card card-custom card-stretch gutter-b">
+                <!--begin::Card Body-->
+                <div class="card-body">
+                    
+                    <div class="font-size-sm mb-6">@((MarkupString)Instruction.Description)</div>
+
+                </div>
+                <!--end::Card Body-->
+            </div>
+            <!--end::Card-->
+            <!--end::Stats Widget 33-->
+        </div>
+    </div>
+    <!--end::Section-->
+
+   
+
+
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Instruction Instruction { get; set; } =new Instruction();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            Instruction = await InstructionsDataService.Get(Id);
+        }
+    }
+}

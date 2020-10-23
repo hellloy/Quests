@@ -8,7 +8,7 @@ namespace Quests.Shared.Entities.Models
     {
         [Required]
         public int Id { get; set; }
-        [Required]
+        [Required (ErrorMessage = "Поле Название категории обязательное")]
         [DisplayName("Название категории")]
         public string Name { get; set; }
         public virtual ICollection<Quest> Quests { get; set; }

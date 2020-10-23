@@ -1,0 +1,99 @@
+﻿@page "/news/edit/{Id:int}"
+@page "/news/edit"
+@using Quests.Shared.Entities.Models
+@using Quests.Client.Services
+@inject INewsDataService NewsDataService;
+@inject IJSRuntime JsRuntime
+
+<div class="card card-custom gutter-b example example-compact">
+    <div class="card-header">
+        <h3 class="card-title">Редактирование новости</h3>
+        <div class="card-toolbar">
+            <div class="example-tools justify-content-center">
+
+            </div>
+        </div>
+    </div>
+    <!--begin::Form-->
+    <EditForm Model="NewsRecord" class="form" OnValidSubmit="@HandleValidSubmit">
+        <div class="card-body">
+            <div class="mb-15">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                
+                <div class="form-group row">
+                    <input type="hidden" @bind-value="@NewsRecord.Id" />
+                    <label class="col-lg-3 col-form-label">Название:</label>
+                    <div class="col-lg-6">
+                        <InputText class="form-control" placeholder="Название" @bind-Value="NewsRecord.Title" />
+                        <span class="form-text text-muted">Введите название новости</span>
+                        <ValidationMessage For="@(() => NewsRecord.Title)" />
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Текст новости:</label>
+                    <div class="col-lg-6">
+                        <InputSummerNote @bind-Text="NewsRecord.Description"></InputSummerNote>
+                        <span class="form-text text-muted">Введите текст новости</span>
+                        <ValidationMessage For="@(() => NewsRecord.Description)" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3 col-form-label">Изображение:</label>
+                    <div class="col-lg-6">
+                        <InputImageCropper @bind-Image="@img" OldImage="@NewsRecord.Img"></InputImageCropper>
+                        <ValidationMessage For="@(() => NewsRecord.Img)" />
+                    </div>
+                </div>
+             
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <button type="submit" class="btn btn-success mr-2">Сохранить</button>
+                    <button type="reset" class="btn btn-secondary">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+    <!--end::Form-->
+</div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public NewsRecord NewsRecord { get; set; } = new NewsRecord();
+    private string img = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (Id != 0)
+        {
+            NewsRecord = await NewsDataService.Get(Id);
+
+
+            StateHasChanged();
+            await JsRuntime.InvokeVoidAsync("KTSummernote.init", DotNetObjectReference.Create(this));
+
+        }
+    }
+
+    private async void HandleValidSubmit()
+    {
+       
+
+        if (Id != 0)
+        {
+            await NewsDataService.Update(NewsRecord, img);
+        }
+        else
+        {
+            await NewsDataService.Add(NewsRecord, img);
+        }
+    }
+}

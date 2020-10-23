@@ -43,11 +43,12 @@ namespace Quests.Server.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Поле электронной почты является обязательным.")]
+            [EmailAddress(ErrorMessage = "Поле электронной почты не является действительным адресом электронной почты.")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Поле Пароль обязательно для заполнения.")]
+            [Display(Name = "Пароль")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -100,7 +101,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Пароль не подходит");
                     return Page();
                 }
             }

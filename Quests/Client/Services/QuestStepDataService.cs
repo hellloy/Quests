@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using Quests.Client.Features;
 using Quests.Shared.Entities.RequestFeatures;
 using Microsoft.AspNetCore.WebUtilities;
@@ -33,6 +34,7 @@ namespace Quests.Client.Services
         private readonly HttpClient _http;
         private readonly IMessagesService _messagesService;
         private readonly SweetAlertService _sweetAlertService;
+        private readonly NavigationManager _navigationManager;
 
         private readonly object _option = new
         {
@@ -41,12 +43,13 @@ namespace Quests.Client.Services
             message = "Идет загрузка данных..."
         };
 
-        public QuestStepDataService(IJSRuntime jsRuntime, HttpClient http, IMessagesService messagesService, SweetAlertService sweetAlertService)
+        public QuestStepDataService(IJSRuntime jsRuntime, HttpClient http, IMessagesService messagesService, SweetAlertService sweetAlertService, NavigationManager navigationManager)
         {
             _jsRuntime = jsRuntime;
             _http = http;
             _messagesService = messagesService;
             _sweetAlertService = sweetAlertService;
+            _navigationManager = navigationManager;
         }
 
         public async Task<PagingResponse<QuestStep>> Get(QuestParameters questStepParameters)
@@ -155,7 +158,8 @@ namespace Quests.Client.Services
             if (response.IsSuccessStatusCode)
             {
                 await _messagesService.ShowSuccess("Новый квест", "был удачно добавлен");
-                return await response.Content.ReadFromJsonAsync<QuestStep>();
+                _navigationManager.NavigateTo("/queststeps");
+                return questStep;
             }
 
             await _messagesService.ShowError("Error", "При добавлении квеста произошла ошибка");
@@ -184,6 +188,7 @@ namespace Quests.Client.Services
             if (response.IsSuccessStatusCode)
             {
                 await _messagesService.ShowSuccess("Этап", "был удачно обновлен");
+                _navigationManager.NavigateTo("/queststeps");
                 return questStep;
             }
 
