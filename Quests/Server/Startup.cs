@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer4.AspNetIdentity;
+using IdentityServer4.Models;
 using Quests.Server.Data;
 using Quests.Server.Models;
 using Quests.Server.Repository;
@@ -62,8 +64,12 @@ namespace Quests.Server
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
+            services.AddIdentityServer(options =>
+                {
+                    options.Authentication.CookieLifetime = TimeSpan.FromDays(30);
+                    options.Authentication.CookieSlidingExpiration = true;
+                })
+             .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
                 {
                     options.IdentityResources["openid"].UserClaims.Add("role");
                     options.ApiResources.Single().UserClaims.Add("role");

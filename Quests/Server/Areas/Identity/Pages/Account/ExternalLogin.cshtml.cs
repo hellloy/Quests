@@ -49,9 +49,19 @@ namespace Quests.Server.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Поле Имя обязательно")]
+            [Display(Name = "Ваше Имя")]
+            public string FirstName { get; set; }
+
+            [Required(ErrorMessage = "Поле Телефон обязательно")]
+            [Display(Name = "Номер телефона")]
+            public string Phone { get; set; }
+
+            [Required(ErrorMessage = "Поле Email обязательно")]
+            [EmailAddress(ErrorMessage = "Поле Email не является действительным адресом электронной почты.")]
+            [Display(Name = "Email")]
             public string Email { get; set; }
+            
         }
 
         public IActionResult OnGetAsync()
@@ -122,11 +132,17 @@ namespace Quests.Server.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email,LastLogin = DateTime.Now};
+                var user = new ApplicationUser { UserName = Input.Email,
+                    Email = Input.Email,
+                    FirstName = Input.FirstName,
+                    PhoneNumber = Input.Phone,
+                    RoleName = "Member",
+                    LastLogin = DateTime.Now};
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "Member");
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
