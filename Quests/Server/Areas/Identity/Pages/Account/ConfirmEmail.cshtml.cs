@@ -40,7 +40,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Спасибо, что подтвердили свой адрес электронной почты." : "Ошибка подтверждения электронной почты.";
+            StatusMessage = result.Succeeded ? "Спасибо, что подтвердили свой Email." : "Ошибка подтверждения Email.";
             return Page();
         }
     }

@@ -67,7 +67,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                 "Подтвердите ваш адрес электронной почты",
                 $"Пожалуйста, подтвердите свой аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите тут</a>.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            ModelState.AddModelError(string.Empty, "Письмо с подтверждением отправлено. Пожалуйста, проверьте свою электронную почту.");
             return Page();
         }
     }

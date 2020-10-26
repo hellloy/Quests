@@ -17,9 +17,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Quests.Server.Data;
 using Quests.Server.Models;
 using Quests.Server.Repository;
+using Quests.Server.Services;
 
 namespace Quests.Server
 {
@@ -51,15 +53,15 @@ namespace Quests.Server
 
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = true;
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 6;
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 6;
 
-            })
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -69,7 +71,7 @@ namespace Quests.Server
                     options.Authentication.CookieLifetime = TimeSpan.FromDays(30);
                     options.Authentication.CookieSlidingExpiration = true;
                 })
-             .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
                 {
                     options.IdentityResources["openid"].UserClaims.Add("role");
                     options.ApiResources.Single().UserClaims.Add("role");
@@ -90,6 +92,15 @@ namespace Quests.Server
             services.Configure<IdentityOptions>(options =>
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
             services.AddRazorPages();
+            services.AddTransient<IEmailSender, EmailSender>(i => 
+                new EmailSender(
+                    Configuration["EmailSender:Host"],
+                    Configuration.GetValue<int>("EmailSender:Port"),
+                    Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                    Configuration["EmailSender:UserName"],
+                    Configuration["EmailSender:Password"]
+                )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
