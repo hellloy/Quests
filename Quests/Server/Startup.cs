@@ -17,6 +17,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Quests.Server.Data;
 using Quests.Server.Models;
@@ -82,6 +84,11 @@ namespace Quests.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["Google:ClientId"];
+                    options.ClientSecret = Configuration["Google:ClientSecret"];
+                })
                 .AddVkontakte(options =>
                 {
                     options.ClientId = "7408375";
@@ -92,7 +99,7 @@ namespace Quests.Server
             services.Configure<IdentityOptions>(options =>
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
             services.AddRazorPages();
-            services.AddTransient<IEmailSender, EmailSender>(i => 
+            services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSender(
                     Configuration["EmailSender:Host"],
                     Configuration.GetValue<int>("EmailSender:Port"),
@@ -126,6 +133,7 @@ namespace Quests.Server
             app.UseRouting();
 
             app.UseIdentityServer();
+            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 
