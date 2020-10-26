@@ -73,10 +73,11 @@ namespace Quests.Server.Controllers
             }
 
             var myQuestStep = await _context.MyQuestSteps.FindAsync(answerVm.MyQuestStepId);
-            if (myQuestStep == null)
+            if (myQuestStep == null || myQuestStep.Status == MyQuestStepStatus.Finished)
             {
                 return NotFound();
             }
+
 
             
             var questStep = await _context.QuestSteps.FindAsync(myQuestStep.QuestStepId);
@@ -98,6 +99,7 @@ namespace Quests.Server.Controllers
 
             answerVm.Result = true;
             myQuestStep.FinishDate = DateTime.Now;
+            myQuestStep.Answer = answerVm.Message;
             
             if (myQuestStep.Hint)
             {

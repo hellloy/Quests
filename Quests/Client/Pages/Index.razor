@@ -12,7 +12,7 @@
     @foreach (var quest in Quests)
     {
         var detailsLink = "/quest/details/" + quest.Id;
-        <div class="col">
+        <div class="col-md-6">
             <div class="card card-custom card-stretch gutter-b">
                 <!--begin::Card Body-->
                 <div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@quest.Img')">
@@ -82,7 +82,7 @@
             var myQuests = await MyQuestDataService.Get();
             if (myQuests.FirstOrDefault(x => x.QuestId == quest.Id) != null)
             {
-                NavManager.NavigateTo("/myQuests/list");
+                NavManager.NavigateTo("/myQuests");
             }
             else
             {
@@ -108,7 +108,7 @@
             if (!string.IsNullOrEmpty(result.Value))
             {
                 await MyQuestDataService.Add(quest);
-                NavManager.NavigateTo("/myQuests/list");
+                NavManager.NavigateTo("/myQuests");
             }
 
         }

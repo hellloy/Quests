@@ -7,6 +7,7 @@
 @inject IMyQuestDataService QuestDataService
 @inject IMyQuestStepDataService QuestStepDataService
 @inject SweetAlertService SweetAlertService
+@inject NavigationManager NavigationManager
 
 
     
@@ -249,6 +250,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadInfo();
+    }
+
+    private async Task LoadInfo()
+    {
         if (Id != 0)
         {
             MyQuestVm = await QuestDataService.Get(Id);
@@ -295,7 +301,7 @@
 
     private async void Answer()
     {
-       var answer = await SweetAlertService.FireAsync(new SweetAlertOptions
+        var answer = await SweetAlertService.FireAsync(new SweetAlertOptions
         {
             Icon = SweetAlertIcon.Question,
             Title = "Ответ",
@@ -313,8 +319,21 @@
                 MyQuestStepId = MyQuestVm.MyActiveStep.Id,
                 Message = answer.Value
             };
-           await QuestStepDataService.Post(answerVm);
+           var result = await QuestStepDataService.Post(answerVm);
+            if (result.Result)
+            {
+                if (result.Finish)
+                {
+                    NavigationManager.NavigateTo("/myQuests");
+                }
+                else
+                {
+                    await LoadInfo();
+                    StateHasChanged();
+                }
+                
+            }
         }
-        
+
     }
 }

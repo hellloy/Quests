@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using CurrieTechnologies.Razor.SweetAlert2;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Quests.Shared.Entities.Models;
 using Quests.Shared.VM;
@@ -21,6 +22,7 @@ namespace Quests.Client.Services
         private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _http;
         private readonly SweetAlertService _sweetAlertService;
+        private readonly NavigationManager _navigationManager;
         private readonly object _option = new
         {
             overlayColor = "#000000",
@@ -28,11 +30,12 @@ namespace Quests.Client.Services
             message = "Идет загрузка данных..."
         };
 
-        public MyQuestStepDataService(IJSRuntime jsRuntime, HttpClient http, SweetAlertService sweetAlertService)
+        public MyQuestStepDataService(IJSRuntime jsRuntime, HttpClient http, SweetAlertService sweetAlertService, NavigationManager navigationManager)
         {
             _jsRuntime = jsRuntime;
             _http = http;
             _sweetAlertService = sweetAlertService;
+            _navigationManager = navigationManager;
         }
 
 
@@ -68,9 +71,10 @@ namespace Quests.Client.Services
                 {
                     Title = "Результат",
                     Text = result.Message,
-                    Icon = result.Result?SweetAlertIcon.Success:SweetAlertIcon.Error,
+                    Icon = result.Result ? SweetAlertIcon.Success : SweetAlertIcon.Error,
                     ConfirmButtonText = "Ок"
                 });
+
                 return result;
             }
 
