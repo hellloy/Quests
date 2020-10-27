@@ -1,6 +1,7 @@
 ﻿@layout AuthLayout
 @page "/authentication/{action}"
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager NavigationManager
 <RemoteAuthenticatorView Action="@Action">
     <LoggingIn>
         Вход в приложение...
@@ -11,11 +12,12 @@
     <CompletingLogOut>
         Вы вышли из приложения...
     </CompletingLogOut>
-    <LogOut>
+    <LogOut >
         Вы выходите из приложения...
     </LogOut>
     <LogOutSucceeded>
         Вы вышли из приложения....
+        @{NavigationManager.NavigateTo("/");}
     </LogOutSucceeded>
     <UserProfile>
         Профиль пользователя ...
@@ -33,4 +35,5 @@
 
 @code{
     [Parameter] public string Action { get; set; }
+
 }
