@@ -1,118 +1,233 @@
 ﻿@page "/"
 @using Quests.Client.Services
 @using CurrieTechnologies.Razor.SweetAlert2
+@using Quests.Shared.Entities.Models
 @inject IQuestDataService QuestDataService
 @inject IMyQuestDataService MyQuestDataService
 @inject NavigationManager NavManager
 @inject IUsersDataService UsersDataService
 @inject SweetAlertService SweetAlertService
 
+    <div class="row">
+        <div class="col-xl-4">
+            <!--begin::Stats Widget 1-->
+            <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-4.svg)">
+                <!--begin::Body-->
+                <div class="card-body">
+                    <span href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">По категориям</span>
+                    <p class="text-dark-75 font-weight-bolder font-size-h5 mt-9 mb-5">
+                        <select class="form-control font-weight-bold pl-2" @bind="CategoryId" >
+                            <option value="0">Выберете категорию:</option>
+                            @foreach (var item in QuestCategories)
+                            {
+                                <option value=@item.Id>@item.Name</option>
+                            }
+                        </select>
+                    </p>
+                </div>
+                <!--end::Body-->
+            </div>
+            <!--end::Stats Widget 1-->
+        </div>
+        <div class="col-xl-4">
+            <!--begin::Stats Widget 2-->
+            <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-2.svg)">
+                <!--begin::Body-->
+                <div class="card-body">
+                    <a href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">По городам</a>
+                    
+                    <p class="text-dark-75 font-weight-bolder font-size-h5 mt-9 mb-5">
+                        <select class="form-control font-weight-bold pl-2" @bind="City" >
+                            <option value="0">Выберете город:</option>
+                            @foreach (var item in Cities)
+                            {
+                                <option value="@item">@item</option>
+                            }
+                        </select>
+                    </p>
+                </div>
+                <!--end::Body-->
+            </div>
+            <!--end::Stats Widget 2-->
+        </div>
+        <div class="col-xl-4">
+            <!--begin::Stats Widget 3-->
+            <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-1.svg)">
+                <!--begin::body-->
+                <div class="card-body">
+                    <a href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">Сброс фильтра</a>
+                    
+                    <p class="text-dark-75 font-weight-bolder font-size-h5 mt-9 mb-5">
+                        <button type="button" class="btn btn-success btn-lg btn-block" @onclick="ResetFilter">Сбросить</button>
+                    </p>
+                </div>
+                <!--end::Body-->
+            </div>
+            <!--end::Stats Widget 3-->
+        </div>
+    </div>
 
-<div class="row">
-    @foreach (var quest in Quests)
-    {
-        var detailsLink = "/quest/details/" + quest.Id;
-        <div class="col-md-6">
-            <div class="card card-custom card-stretch gutter-b">
-                <!--begin::Card Body-->
-                <div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@quest.Img')">
-                    <!--begin::Image-->
-                    <!--end::Image-->
-                    <!--begin::Card-->
-                    <div class="card card-custom w-auto w-md-300px w-lg-auto w-xxl-400px ml-auto m-10">
+
+        <div class="row">
+            @foreach (var quest in FilteredQuests)
+            {
+                var detailsLink = "/quest/details/" + quest.Id;
+                <div class="col-md-6">
+                    <div class="card card-custom card-stretch gutter-b">
                         <!--begin::Card Body-->
-                        <div class="card-body px-12 py-10">
-                            <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@quest.Name</a></h3>
-                            <div class="text-primary font-size-h4 mb-9">@quest.Price ₽</div>
-                            @*<div class="font-size-sm mb-8">@((MarkupString)quest.Description)</div>*@
-                            <!--begin::Info-->
-                            <div class="d-flex mb-3">
-                                <span class="text-dark-50 flex-root font-weight-bold">Время:</span>
-                                <span class="text-dark flex-root font-weight-bold">@quest.TravelTime.ToString("HH:mm")</span>
-                            </div>
-                            <div class="d-flex mb-3">
-                                <span class="text-dark-50 flex-root font-weight-bold">Дистанция:</span>
-                                <span class="text-dark flex-root font-weight-bold">@quest.Distance</span>
-                            </div>
+                        <div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@quest.Img')">
+                            <!--begin::Image-->
+                            <!--end::Image-->
+                            <!--begin::Card-->
+                            <div class="card card-custom w-auto w-md-300px w-lg-auto w-xxl-400px ml-auto m-10">
+                                <!--begin::Card Body-->
+                                <div class="card-body px-12 py-10">
+                                    <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@quest.Name</a></h3>
+                                    <div class="text-primary font-size-h4 mb-9">@quest.Price ₽</div>
+                                    @*<div class="font-size-sm mb-8">@((MarkupString)quest.Description)</div>*@
+                                    <!--begin::Info-->
+                                    <div class="d-flex mb-3">
+                                        <span class="text-dark-50 flex-root font-weight-bold">Время:</span>
+                                        <span class="text-dark flex-root font-weight-bold">@quest.TravelTime.ToString("HH:mm")</span>
+                                    </div>
+                                    <div class="d-flex mb-3">
+                                        <span class="text-dark-50 flex-root font-weight-bold">Дистанция:</span>
+                                        <span class="text-dark flex-root font-weight-bold">@quest.Distance</span>
+                                    </div>
 
-                            <!--end::Info-->
+                                    <!--end::Info-->
+                                </div>
+                                <!--end::Card Body-->
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <NavLink href="@detailsLink" class="btn btn-light-primary font-weight-bold btn-block mb-4 mb-xxl-0 mb-xl-0 mb-md-0" Match="NavLinkMatch.All">
+                                                Подробно
+                                            </NavLink>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button class="btn btn-success btn-shadow font-weight-bold btn-block" @onclick="@(e => BuyGame(quest))">
+                                                Играть
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!--end::Card-->
                         </div>
                         <!--end::Card Body-->
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <NavLink href="@detailsLink" class="btn btn-light-primary font-weight-bold btn-block mb-4 mb-xxl-0 mb-xl-0 mb-md-0" Match="NavLinkMatch.All">
-                                        Подробно
-                                    </NavLink>
-                                </div>
-                                <div class="col-md-6">
-                                    <button class="btn btn-success btn-shadow font-weight-bold btn-block" @onclick="@(e => BuyGame(quest))">
-                                        Играть
-                                    </button>
-                                </div>
-                            </div>
-                            
-                        </div>
                     </div>
-                    <!--end::Card-->
                 </div>
-                <!--end::Card Body-->
-            </div>
+            }
+
         </div>
-    }
 
-</div>
-
-@code
+        @code
 {
-    private List<Quests.Shared.Entities.Models.Quest> Quests { get; set; } = new List<Quests.Shared.Entities.Models.Quest>();
+            private List<Quests.Shared.Entities.Models.Quest> Quests { get; set; } = new List<Quests.Shared.Entities.Models.Quest>();
+            private List<Quests.Shared.Entities.Models.Quest> FilteredQuests { get; set; } = new List<Quests.Shared.Entities.Models.Quest>();
+            public List<QuestCategory> QuestCategories { get; set; } = new List<QuestCategory>();
+            public List<string> Cities { get; set; } = new List<string>();
 
-    protected override async Task OnInitializedAsync()
-    {
-        Quests = await QuestDataService.GetAll();
-
-    }
-
-    protected async Task BuyGame(Quests.Shared.Entities.Models.Quest quest)
-    {
-        var user = await UsersDataService.GetUserInfo();
-
-        if (quest.Price > user.Points)
-        {
-            var myQuests = await MyQuestDataService.Get();
-            if (myQuests.FirstOrDefault(x => x.QuestId == quest.Id) != null)
+            private int _categoryIdVal;
+            private int CategoryId
             {
-                NavManager.NavigateTo("/myQuests");
-            }
-            else
-            {
-                NavManager.NavigateTo("/payment/" + (quest.Price - user.Points));
+                get=> _categoryIdVal;
+                set
+                {
+
+                    var val = value;
+                    _categoryIdVal = val;
+                    FilteredQuests = val != 0 ? Quests.Where(x => x.QuestCategoryId == val).ToList() : Quests;
+                    StateHasChanged();
+                }
             }
 
+            private string _cityVal;
+            private string City
+            {
+                get => _cityVal;
+                set
+                {
+
+                    var val = value;
+                    _cityVal = val;
+                    FilteredQuests = val != "0" ? Quests.Where(x => x.City == val).ToList() : Quests;
+                    StateHasChanged();
+                }
+            }
+
+            protected override async Task OnInitializedAsync()
+            {
+                Quests = await QuestDataService.GetAll();
+                FilteredQuests = Quests;
+                await GetCategories();
+                GetCities();
+
+            }
+
+            protected async Task BuyGame(Quests.Shared.Entities.Models.Quest quest)
+            {
+                var user = await UsersDataService.GetUserInfo();
+
+                if (quest.Price > user.Points)
+                {
+                    var myQuests = await MyQuestDataService.Get();
+                    if (myQuests.FirstOrDefault(x => x.QuestId == quest.Id) != null)
+                    {
+                        NavManager.NavigateTo("/myQuests");
+                    }
+                    else
+                    {
+                        NavManager.NavigateTo("/payment/" + (quest.Price - user.Points));
+                    }
+
+                }
+
+                else
+                {
+
+
+                    var result = await SweetAlertService.FireAsync(new SweetAlertOptions
+                    {
+                        Title = "Вы уверены?",
+                        Text = "C вашего счета будет списано " + quest.Price + " очков",
+                        Icon = SweetAlertIcon.Warning,
+                        ShowCancelButton = true,
+                        ConfirmButtonText = "Да, хочу пройти квест!",
+                        CancelButtonText = "Нет, отменить игру"
+                    });
+
+                    if (!string.IsNullOrEmpty(result.Value))
+                    {
+                        await MyQuestDataService.Add(quest);
+                        NavManager.NavigateTo("/myQuests");
+                    }
+
+                }
+
+
+            }
+
+            private async Task GetCategories()
+            {
+                QuestCategories = await QuestDataService.GetAllQuestCategories();
+                StateHasChanged();
+
+            }
+
+            private void GetCities()
+            {
+                Cities = Quests.Select(x => x.City).Distinct().ToList();
+                StateHasChanged();
+            }
+
+
+
+            private void ResetFilter()
+            {
+                CategoryId = 0;
+                City = "0";
+            }
         }
-
-        else
-        {
-
-
-            var result = await SweetAlertService.FireAsync(new SweetAlertOptions
-            {
-                Title = "Вы уверены?",
-                Text = "C вашего счета будет списано "+quest.Price+" очков",
-                Icon = SweetAlertIcon.Warning,
-                ShowCancelButton = true,
-                ConfirmButtonText = "Да, хочу пройти квест!",
-                CancelButtonText = "Нет, отменить игру"
-            });
-
-            if (!string.IsNullOrEmpty(result.Value))
-            {
-                await MyQuestDataService.Add(quest);
-                NavManager.NavigateTo("/myQuests");
-            }
-
-        }
-
-
-    }
-}
