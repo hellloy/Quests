@@ -156,9 +156,12 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                             pageHandler: null,
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Подтвердите ваш email",
-                            $"Подтвердите Ваш аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите тут</a>.");
+                        if (_userManager.Options.SignIn.RequireConfirmedEmail)
+                        {
+                            await _emailSender.SendEmailAsync(Input.Email, "Подтвердите ваш email",
+                                $"Подтвердите Ваш аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите тут</a>.");
+                        }
+                        
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {

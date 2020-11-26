@@ -99,8 +99,12 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Подтвердите ваш email",
-                        $"Подтвердите Ваш аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите тут</a>.");
+                    if (_userManager.Options.SignIn.RequireConfirmedEmail)
+                    {
+                        await _emailSender.SendEmailAsync(Input.Email, "Подтвердите ваш email",
+                            $"Подтвердите Ваш аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите тут</a>.");
+                    }
+                    
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

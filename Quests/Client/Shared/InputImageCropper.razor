@@ -1,8 +1,6 @@
 ﻿@namespace Quests.Client.Shared
 @inject IJSRuntime JsRuntime
 
-
-@using BlazorInputFile
 @using System.IO
 @using System.Linq
 
@@ -65,20 +63,15 @@
     [Parameter]
     public EventCallback<string> ImageChanged { get; set; }
 
-    async Task HandleSelection(IFileListEntry[] files)
+    async Task HandleSelection(InputFileChangeEventArgs e)
     {
-        var rawFile = files.FirstOrDefault();
-        if (rawFile != null)
-        {
-
-            var format = "image/jpeg";
-
-            var ms = new MemoryStream();
-
-            await rawFile.Data.CopyToAsync(ms);
-
-            Image = $"data:{format};base64,{Convert.ToBase64String(ms.ToArray())}";
-        }
+        var format = "image/jpeg";
+        var imageFile = e.File;
+        var buffer = new byte[imageFile.Size];
+        await imageFile.OpenReadStream().ReadAsync(buffer);
+        Image = 
+            $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+      
         await OnImageChanged(Image);
     }
 

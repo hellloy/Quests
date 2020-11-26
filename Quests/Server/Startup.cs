@@ -15,9 +15,11 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer4;
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Quests.Server.Data;
@@ -86,17 +88,18 @@ namespace Quests.Server
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
             services.AddAuthentication()
-                .AddIdentityServerJwt()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = Configuration["Google:ClientId"];
-                    options.ClientSecret = Configuration["Google:ClientSecret"];
+                    
+                    options.ClientId = "743168623561-5hts8k765o3bcf0fkr9801vl85ttftkh.apps.googleusercontent.com";
+                    options.ClientSecret = "vbMZu2DgaRrmilOjJOAwXaBU";
                 })
                 .AddVkontakte(options =>
                 {
+                    
                     options.ClientId = "7408375";
                     options.ClientSecret = "29G8M6GqpCGIKBPJlPz9";
-                });
+                }).AddIdentityServerJwt();
 
             services.AddControllersWithViews();
             services.Configure<IdentityOptions>(options =>
@@ -128,17 +131,18 @@ namespace Quests.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+           
             app.UseIdentityServer();
-            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
