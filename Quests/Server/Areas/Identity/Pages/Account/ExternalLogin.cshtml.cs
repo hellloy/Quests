@@ -79,15 +79,19 @@ namespace Quests.Server.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             if (remoteError != null)
             {
+                _logger.LogInformation("Remote error -------"+
+                    remoteError
+                );
                 ErrorMessage = $"Ошибка от внешнего провайдера: {remoteError}";
                 return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
+                _logger.LogInformation("Info null -------");
                 ErrorMessage = "Ошибка загрузки внешней информации для входа.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
@@ -105,6 +109,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
             }
             else
             {
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider. Result unSucceeded ------", info.Principal.Identity.Name, info.LoginProvider);
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
@@ -112,7 +117,9 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        FirstName = info.Principal.FindFirstValue(ClaimTypes.Name),
+                        Phone = info.Principal.FindFirstValue(ClaimTypes.MobilePhone)
                     };
                 }
                 return Page();

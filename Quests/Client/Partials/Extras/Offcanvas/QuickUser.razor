@@ -5,6 +5,7 @@
 @using Quests.Shared.VM
 
 
+
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
 @inject IUsersDataService UsersDataService
@@ -41,7 +42,7 @@
                         <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"> @context.User.Identity.Name</a>
                         <div class="text-success mt-1"><span class="text-muted mt-1">Мои очки:</span> @user.Points</div>
                         <div class="navi mt-2">
-                         
+
                             <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5" @onclick="BeginSignOut">Выйти</button>
                         </div>
                     </div>
@@ -84,14 +85,14 @@
                             </div>
                         </div>
                     </NavLink>
-                    
+
                     <NavLink href="/payment" class="navi-item" Match="NavLinkMatch.All">
                         <div class="navi-link">
                             <div class="symbol symbol-40 bg-light mr-3">
                                 <div class="symbol-label">
                                     <span class="svg-icon svg-icon-md svg-icon-success">
 
-                                        
+
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                                 <rect x="0" y="0" width="24" height="24" />
@@ -100,7 +101,7 @@
                                             </g>
                                         </svg>
 
-                                        
+
                                     </span>
                                 </div>
                             </div>
@@ -108,7 +109,7 @@
                                 <div class="font-weight-bold">Пополнить счет</div>
                                 <div class="text-muted">
                                     Покупка очков для новых квестов
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -142,10 +143,10 @@
                             </div>
                         </div>
                     </NavLink>
-                        
+
                 </div>
 
-              
+
             </div>
 
             <!--end::Content-->
@@ -163,7 +164,9 @@
 @code {
     private async Task BeginSignOut(MouseEventArgs args)
     {
+        
         await SignOutManager.SetSignOutState();
+        
         Navigation.NavigateTo("authentication/logout");
     }
 

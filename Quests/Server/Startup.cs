@@ -48,8 +48,20 @@ namespace Quests.Server
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
+                    
                     .WithExposedHeaders("X-Pagination"));
             });
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = (SameSiteMode)(-1);
+                options.OnAppendCookie = cookieContext =>
+                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+                options.OnDeleteCookie = cookieContext =>
+                    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+                
+            });
+
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -73,38 +85,41 @@ namespace Quests.Server
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-            services.AddIdentityServer(options =>
-                {
-                    options.Authentication.CookieLifetime = TimeSpan.FromDays(30);
-                    options.Authentication.CookieSlidingExpiration = true;
-                })
+            services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
                 {
-                    options.IdentityResources["openid"].UserClaims.Add("role");
-                    options.ApiResources.Single().UserClaims.Add("role");
+                   options.IdentityResources["openid"].UserClaims.Add("role");
+                   options.ApiResources.Single().UserClaims.Add("role");
                 });
 
-            // Need to do this as it maps "role" to ClaimTypes.Role and causes issues
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
+            
+
+
 
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    
+
                     options.ClientId = "743168623561-5hts8k765o3bcf0fkr9801vl85ttftkh.apps.googleusercontent.com";
                     options.ClientSecret = "vbMZu2DgaRrmilOjJOAwXaBU";
                 })
                 .AddVkontakte(options =>
                 {
-                    
+
                     options.ClientId = "7408375";
                     options.ClientSecret = "29G8M6GqpCGIKBPJlPz9";
-                }).AddIdentityServerJwt();
+                })
+                .AddIdentityServerJwt();
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("role");
 
             services.AddControllersWithViews();
+
             services.Configure<IdentityOptions>(options =>
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
+
             services.AddRazorPages();
+
             services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSender(
                     Configuration["EmailSender:Host"],
@@ -122,7 +137,6 @@ namespace Quests.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
                 app.UseWebAssemblyDebugging();
             }
             else
@@ -131,7 +145,7 @@ namespace Quests.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
+            //app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
@@ -151,6 +165,65 @@ namespace Quests.Server
                 endpoints.MapFallbackToFile("index.html");
             });
             CreateRoles(serviceProvider).Wait();
+        }
+       
+
+        public static class MyUserAgentDetectionLib
+        {
+            public static bool DisallowsSameSiteNone(string userAgent)
+            {
+             // Check if a null or empty string has been passed in, since this
+             // will cause further interrogation of the useragent to fail.
+             if (String.IsNullOrWhiteSpace(userAgent))
+                return false;
+            
+                // Cover all iOS based browsers here. This includes:
+                // - Safari on iOS 12 for iPhone, iPod Touch, iPad
+                // - WkWebview on iOS 12 for iPhone, iPod Touch, iPad
+                // - Chrome on iOS 12 for iPhone, iPod Touch, iPad
+                // All of which are broken by SameSite=None, because they use the iOS networking
+                // stack.
+                if (userAgent.Contains("CPU iPhone OS 12") ||
+                    userAgent.Contains("iPad; CPU OS 12"))
+                {
+                    return true;
+                }
+
+                // Cover Mac OS X based browsers that use the Mac OS networking stack. This includes:
+                // - Safari on Mac OS X.
+                // This does not include:
+                // - Chrome on Mac OS X
+                // Because they do not use the Mac OS networking stack.
+                if (userAgent.Contains("Macintosh; Intel Mac OS X 10_14") &&
+                    userAgent.Contains("Version/") && userAgent.Contains("Safari"))
+                {
+                    return true;
+                }
+
+                // Cover Chrome 50-69, because some versions are broken by SameSite=None, 
+                // and none in this range require it.
+                // Note: this covers some pre-Chromium Edge versions, 
+                // but pre-Chromium Edge does not require SameSite=None.
+                if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        private void CheckSameSite(HttpContext httpContext, CookieOptions options)
+        {
+            if (options.SameSite == SameSiteMode.None)
+            {
+                var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
+                if (MyUserAgentDetectionLib.DisallowsSameSiteNone(userAgent))
+                {
+                    options.SameSite = (SameSiteMode)(-1);
+                }
+
+            }
         }
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
@@ -194,6 +267,5 @@ namespace Quests.Server
                 }
             }
         }
-
     }
 }
