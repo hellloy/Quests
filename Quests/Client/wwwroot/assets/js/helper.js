@@ -113,10 +113,10 @@ function RbkMoneyCheckout(invoiceId,invoiceAccessToken,helper) {
         name: 'Хочуквест',
         description: 'Пополнение счета',
         opened: function () {
-            console.log('Checkout opened');
+            helper.invokeMethodAsync("InvokeMethodOpen");
         },
         closed: function () {
-            helper.invokeMethodAsync("InvokeMethod");
+            
         },
         finished: function () {
             helper.invokeMethodAsync("InvokeMethod");

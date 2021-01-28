@@ -20,7 +20,7 @@
             </p>
             <EditForm Model="@_paymentForm" OnValidSubmit="@OnPayment">
                 <InputNumber @bind-Value="_paymentForm.Sum" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0 col-sm-6 no-spinner no-gutters" />
-                <button type="submit" class="btn btn-success font-weight-bold font-size-h3 px-12 py-5 px-6 mt-10 col-sm-6">Пополнить</button>
+                <button type="submit" class="btn btn-success font-weight-bold font-size-h3 px-12 py-5 px-6 mt-10 col-sm-6 @_cssWait">Пополнить</button>
             </EditForm>
             </div>
     </div>
@@ -38,6 +38,9 @@
     PaymentForm _paymentForm = new PaymentForm();
 
 
+
+    string _cssWait = string.Empty;
+
     protected override void OnInitialized()
     {
         if (Points != 0)
@@ -46,9 +49,16 @@
 
     private async Task OnPayment()
     {
+        _cssWait = "spinner spinner-white spinner-right";
+        StateHasChanged();
+
         var invoice =  await HttpClient.GetFromJsonAsync<RbkMoneyInvoiceResponse>("api/Payment/" + _paymentForm.Sum);
 
-        if (invoice != null) await JSRuntime.InvokeVoidAsync("RbkMoneyCheckout", invoice.invoice.id, invoice.invoiceAccessToken.payload, DotNetObjectReference.Create(this));
+        if (invoice != null)
+        {
+            await JSRuntime.InvokeVoidAsync("RbkMoneyCheckout", invoice.invoice.id, invoice.invoiceAccessToken.payload, DotNetObjectReference.Create(this));
+        }
+
     }
 
 
@@ -66,6 +76,13 @@
             NavigationManager.NavigateTo("/quest/details/"+QuestId);
         }
         NavigationManager.NavigateTo("/");
+    }
+
+    [JSInvokable]
+    public void InvokeMethodOpen()
+    {
+        _cssWait = string.Empty;
+        StateHasChanged();
     }
 
 }
