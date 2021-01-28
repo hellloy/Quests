@@ -1,9 +1,10 @@
 ﻿@page "/quest/edit/{Id:int}"
 @page "/quest/edit"
-
+@attribute [Authorize(Roles = "Admin")]
 @using Quests.Client.Services
 @using Quests.Shared.Entities.Models
 @using CurrieTechnologies.Razor.SweetAlert2
+@using Microsoft.AspNetCore.Authorization
 
 @inject IJSRuntime JsRuntime
 @inject IQuestDataService QuestDataService
@@ -71,7 +72,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Изображение:</label>
                     <div class="col-lg-6">
-                        <InputImageCropper  @bind-Image="@img" OldImage="@_quest.Img" ></InputImageCropper>
+                        <InputImageCropper @bind-Image="@img" OldImage="@_quest.Img"></InputImageCropper>
                         <ValidationMessage For="@(() => _quest.Img)" />
                     </div>
                 </div>
@@ -102,7 +103,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Код карты (Iframe):</label>
                     <div class="col-lg-6">
-                        <InputTextArea class="form-control" placeholder="HTML Iframe"  @bind-Value="_quest.MapCode" />
+                        <InputTextArea class="form-control" placeholder="HTML Iframe" @bind-Value="_quest.MapCode" />
                         <span class="form-text text-muted">Вставьте код IFRAME </span>
                         <ValidationMessage For="@(() => _quest.MapCode)" />
                     </div>
@@ -110,7 +111,7 @@
                 <div class="form-group row">
                     <label class="col-lg-3 col-form-label">Код видео (Iframe):</label>
                     <div class="col-lg-6">
-                        <InputTextArea class="form-control" placeholder="HTML Iframe"  @bind-Value="_quest.VideoCode" />
+                        <InputTextArea class="form-control" placeholder="HTML Iframe" @bind-Value="_quest.VideoCode" />
                         <span class="form-text text-muted">Вставьте код IFRAME </span>
                         <ValidationMessage For="@(() => _quest.VideoCode)" />
                     </div>
@@ -189,7 +190,7 @@
         }
     }
 
-    
+
     private async void AddQuestCategory()
     {
         await _sweetAlertService.FireAsync(new SweetAlertOptions

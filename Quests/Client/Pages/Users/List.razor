@@ -1,10 +1,13 @@
 ﻿@page "/users"
+@attribute [Authorize(Roles = "Admin")]
 @using Quests.Shared.VM
 @using Quests.Client.Services
 @using System.Globalization
 @inject IUsersDataService UsersDataService;
 @inject IJSRuntime JsRuntime
 @using System.Threading
+@using Microsoft.AspNetCore.Authorization
+
 
 <div class="card card-custom gutter-b">
     <div class="card-body">
@@ -12,13 +15,15 @@
             <input type="text" class="form-control" placeholder="Поиск..." @bind-value="@SearchTerm" @bind-value:event="oninput" @onkeyup="SearchChanged" />
             <span><i class="flaticon2-search-1 text-muted"></i></span>
         </div>
+        <h6 class="m-4">Сортировка</h6>
+        <button class="btn btn-primary" @onclick="() => ChangeLatestEnterSort(_latestEnter)"> Вход</button>
+        <button class="btn btn-primary" @onclick="() => ChangePointsSort(_pointSort)"> Очки</button>
     </div>
 </div>
-
 <div class="row">
     @foreach (var user in UsersVm)
     {
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
             <!--begin::Card-->
             <div class="card card-custom gutter-b card-stretch">
                 <!--begin::Body-->
@@ -40,7 +45,7 @@
                             <!--end::Pic-->
                             <!--begin::Title-->
                             <div class="d-flex flex-column">
-                                <a  @onclick="()=>SelectEditUser(user.Id)" class="text-dark font-weight-bold text-hover-primary font-size-h4 mb-0 cursor-pointer">@user.UserName</a>
+                                <a @onclick="()=>SelectEditUser(user.Id)" class="text-dark font-weight-bold text-hover-primary font-size-h4 mb-0 cursor-pointer">@user.UserName</a>
                             </div>
                             <!--end::Title-->
                         </div>
@@ -186,45 +191,45 @@
                     <h4 class="modal-title">Список квестов пользователя</h4>
                     <button type="button" class="close" @onclick="@ModalCancel1">&times;</button>
                 </div>
-                
-                    <!-- Modal body -->
+
+                <!-- Modal body -->
                 <div class="modal-body" style="height: 300px;">
                     <div data-scroll="true" data-height="300">
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
-                                <tr>
-                                    <th scope="col">Дата покупки</th>
-                                    <th scope="col">Название</th>
-                                    <th scope="col">Город</th>
-                                    <th scope="col">Стоимость</th>
-                                    <th scope="col">Статус</th>
-                                </tr>
+                                    <tr>
+                                        <th scope="col">Дата покупки</th>
+                                        <th scope="col">Название</th>
+                                        <th scope="col">Город</th>
+                                        <th scope="col">Стоимость</th>
+                                        <th scope="col">Статус</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var quest in UserQuests)
-                                {
-                                    <tr>
-                                        <td>@quest.PurchaseDateTime.ToString(CultureInfo.CurrentUICulture)</td>
-                                        <td>@quest.Name</td>
-                                        <td>@quest.City</td>
-                                        <td>@quest.Price</td>
-                                        <td>@quest.Status</td>
-                                    </tr>
-                                }
+                                    @foreach (var quest in UserQuests)
+                                    {
+                                        <tr>
+                                            <td>@quest.PurchaseDateTime.ToString(CultureInfo.CurrentUICulture)</td>
+                                            <td>@quest.Name</td>
+                                            <td>@quest.City</td>
+                                            <td>@quest.Price</td>
+                                            <td>@quest.Status</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
-                           
-                        </div>
-
 
                     </div>
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @onclick="@ModalCancel1">Ок</button>
-                    </div>
-                
+
+
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="@ModalCancel1">Ок</button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -240,6 +245,9 @@
     bool _showModal = false;
     bool _showModal1 = false;
     private string img = "";
+
+    bool _pointSort = false;
+    bool _latestEnter = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -257,9 +265,14 @@
     private void OnTimerElapsed(object sender)
     {
         UsersVm = UsersVmQuests.Users.Where(t =>
-            t.UserName.Contains(SearchTerm) ||
-            t.Name.Contains(SearchTerm) ||
-            t.Phone.Contains(SearchTerm))
+            t.UserName.ToLower().Contains(SearchTerm.ToLower()) ||
+            t.Name.ToLower().Contains(SearchTerm.ToLower()) ||
+            t.Phone.ToLower().Contains(SearchTerm.ToLower()) ||
+            t.RoleName.ToLower().Contains(SearchTerm.ToLower()) ||
+            t.Points.ToString().ToLower().Contains(SearchTerm.ToLower()) ||
+            t.LatestSign.ToString().ToLower().Contains(SearchTerm.ToLower()) ||
+            t.ActiveStateStatus.ToString().ToLower().Contains(SearchTerm.ToLower()) ||
+            t.ActiveQuestId.ToString().ToLower().Contains(SearchTerm.ToLower()))
         .ToList();
         _timer.Dispose();
         StateHasChanged();
@@ -301,6 +314,38 @@
     {
         UserQuests = UsersVmQuests.Quests.Where(x => x.UserId == id).ToList();
         _showModal1 = true;
+    }
+
+    private void ChangePointsSort(bool pointSort)
+    {
+        if (pointSort)
+        {
+            UsersVm = UsersVm.OrderByDescending(x => x.Points).ToList();
+            _pointSort = true;
+            StateHasChanged();
+        }
+        else
+        {
+            UsersVm = UsersVm.OrderBy(x => x.Points).ToList();
+            _pointSort = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ChangeLatestEnterSort(bool latestEnter)
+    {
+        if (latestEnter)
+        {
+            UsersVm=UsersVm.OrderByDescending(x => x.LatestSign).ToList();
+            _latestEnter = false;
+            StateHasChanged();
+        }
+        else
+        {
+            UsersVm=UsersVm.OrderBy(x => x.LatestSign).ToList();
+            _latestEnter = true;
+            StateHasChanged();
+        }
     }
 
 }

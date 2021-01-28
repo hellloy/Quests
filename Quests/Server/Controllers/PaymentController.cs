@@ -46,8 +46,14 @@ namespace Quests.Server.Controllers
 
             await _context.Invoices.AddAsync(invoice);
             await _context.SaveChangesAsync();
+            var result = RbkMoney.CreateOrder(id, invoice.Id);
+            if (result == "Bad request")
+            {
+                return BadRequest();
+            }
 
-            return RoboKassa.GenerateAuthLink(id, invoice.Id);
+            return result;
+            //return RoboKassa.GenerateAuthLink(id, invoice.Id);
         }
 
        

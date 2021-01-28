@@ -1,6 +1,11 @@
-﻿@namespace Quests.Client.Pages.Partials
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Quests.Client.Services
+@using Quests.Shared.VM
+@namespace Quests.Client.Pages.Partials
 
 @inject NavigationManager NavigationManager
+@inject SignOutSessionStateManager SignOutManager
+@inject IUsersDataService UsersDataService
 <!--begin::Aside-->
 <div class="aside aside-left aside-fixed d-flex flex-column flex-row-auto" id="kt_aside">
 
@@ -36,213 +41,211 @@
     <!--end::Brand-->
     <!--begin::Aside Menu-->
     <div class="aside-menu-wrapper flex-column-fluid" id="kt_aside_menu_wrapper">
-
+        
         <!--begin::Menu Container-->
-        <div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+    <div id="kt_aside_menu" class="aside-menu my-4" data-menu-vertical="1" data-menu-scroll="1" data-menu-dropdown-timeout="500">
+    
+        
+        <AuthorizeView>
+            <Authorized>
+                <div class="col">
+                    <div class="card card-custom bgi-no-repeat card-stretch gutter-b mt-10" style=" background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-4.svg)">
+                        <div class="card-body">
+                        <div class="d-flex align-items-center mt-5">
+                                <div class="symbol symbol-100 mr-5">
+                                    <div class="symbol-label" style="background-image:url('@user.Img')"></div>
+                                    <i class="symbol-badge bg-success"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mt-5">
+                                <div class="d-flex flex-column">
+                                    <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"> @context.User.Identity.Name</a>
+                                    <div class="text-success mt-1"><span class="text-muted mt-1">Мои очки:</span> @user.Points</div>
+                                    <div class="navi mt-2">
 
-            <!--begin::Menu Nav-->
-            <ul class="menu-nav">
-                <NavMenuItem Url="">
-                    <span class="svg-icon menu-icon">
+                                        <button class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5" @onclick="BeginSignOut">Выйти</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="separator separator-dashed mt-8 mb-5"></div>
+                            <div class="navi navi-spacer-x-0 p-0">
+                                <NavLink href="authentication/profile" class="navi-item" Match="NavLinkMatch.All">
+                                    <div class="navi-link">
+                                        <div class="symbol symbol-40 bg-light mr-3">
+                                            <div class="symbol-label">
+                                                <span class="fas fa-house-user text-info">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="navi-text">
+                                            <div class="font-weight-bold">Личный кабинет</div>
+                                            
+                                        </div>
+                                    </div>
+                                </NavLink>
 
-                        <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <polygon points="0 0 24 0 24 24 0 24" />
-                                <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                            </g>
-                        </svg>
+                                <NavLink href="/payment" class="navi-item" Match="NavLinkMatch.All">
+                                    <div class="navi-link">
+                                        <div class="symbol symbol-40 bg-light mr-3">
+                                            <div class="symbol-label">
+                                                <span class="fas fa-dollar-sign text-success">
+                                                    </span>
+                                            </div>
+                                        </div>
+                                        <div class="navi-text">
+                                            <div class="font-weight-bold">Пополнить счет</div>
+                                            
+                                        </div>
+                                    </div>
+                                </NavLink>
 
-                        <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-text">Доступные квесты</span>
-                </NavMenuItem>
+                                
+                                <NavLink href="/myQuests" class="navi-item" Match="NavLinkMatch.All">
+                                    <div class="navi-link">
+                                        <div class="symbol symbol-40 bg-light mr-3">
+                                            <div class="symbol-label">
+                                                <span class=" fas fa-th-list text-warning">
+                                                    </span>
+                                            </div>
+                                        </div>
+                                        <div class="navi-text">
+                                            <div class="font-weight-bold">Мои квесты</div>
+                                            
+                                        </div>
+                                    </div>
+                                </NavLink>
 
-                <AuthorizeView Roles="Admin">
-                    <NavMenuItem Url="/quest/edit">
-                        <span class="svg-icon menu-icon">
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+   
+    <!--begin::Menu Nav-->
+    <ul class="menu-nav">
+    
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+    <li class="menu-section">
+        <h4 class="menu-text">Навигация</h4>
+        <i class="menu-icon ki ki-bold-more-hor icon-md"></i>
+    </li>
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Квест создать</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="/quest" >
-                        <span class="svg-icon menu-icon">
+    <li class="menu-item @GetActive("", NavLinkMatch.All)" aria-haspopup="true">
+        <NavLink class="menu-link" href="" Match="NavLinkMatch.All">
+            <span class="menu-icon fas fa-list-alt">
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+               
+            </span>
+            <span class="menu-text">Доступные квесты</span>
+        </NavLink>
+    </li>
+    <AuthorizeView Roles="Admin">
+        <li class="menu-item @GetActive("quest/edit", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/quest/edit" Match="NavLinkMatch.All">
+                <span class=" menu-icon far fa-plus-square">
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Квест список</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="/queststep/edit" >
-                        <span class="svg-icon menu-icon">
+                    
+                </span>
+                <span class="menu-text">Квест создать</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("quest", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/quest" Match="NavLinkMatch.All">
+                <span class=" menu-icon fas fa-list">
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+                    
+                </span>
+                <span class="menu-text">Квест список</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("queststep/edit", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/queststep/edit" Match="NavLinkMatch.All">
+                <span class="menu-icon far fa-plus-square">
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Этап редактирование</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="/queststeps">
-                        <span class="svg-icon menu-icon">
+                    
+                </span>
+                <span class="menu-text">Этап создать</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("queststeps", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/queststeps" Match="NavLinkMatch.All">
+                <span class="menu-icon fas fa-list-ul">
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+                   
+                    
+                </span>
+                <span class="menu-text">Этапы список</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("users", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/users" Match="NavLinkMatch.All">
+                <span class="menu-icon fas fa-users">
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Этапы список</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="/users">
-                        <span class="svg-icon menu-icon">
+                   
+                </span>
+                <span class="menu-text">Пользователи</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("news/edit", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/news/edit" Match="NavLinkMatch.All">
+                <span class="menu-icon far fa-plus-square">
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+                   
+                </span>
+                <span class="menu-text">Добавить новость</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("instructions/edit", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/instructions/edit" Match="NavLinkMatch.All">
+                <span class="menu-icon far fa-plus-square">
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Пользователи</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="/news/edit" >
-                        <span class="svg-icon menu-icon">
+                   
+                </span>
+                <span class="menu-text">Добавить инструкцию</span>
+            </NavLink>
+        </li>
+    </AuthorizeView>
+    <AuthorizeView Roles="Member">
+        <li class="menu-item @GetActive("myquests", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/myquests" Match="NavLinkMatch.All">
+                <span class="menu-icon fas fa-th-list"></span>
+                <span class="menu-text">Мои квесты</span>
+            </NavLink>
+        </li>
+        <li class="menu-item @GetActive("authentication/profile", NavLinkMatch.All)" aria-haspopup="true">
+            <NavLink class="menu-link" href="/authentication/profile" Match="NavLinkMatch.All">
+                <span class="menu-icon fas fa-house-user">
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+                   
+                </span>
+                <span class="menu-text">Личный кабинет</span>
+            </NavLink>
+        </li>
+    </AuthorizeView>
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Добавить новость</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="/instructions/edit" >
-                        <span class="svg-icon menu-icon">
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Добавить инструкцию</span>
-                    </NavMenuItem>
-                </AuthorizeView>
-                <AuthorizeView Roles="Member">
-                    <NavMenuItem Url="/myquests">
-                        <span class="svg-icon menu-icon">
+    <li class="menu-item @GetActive("news", NavLinkMatch.All)" aria-haspopup="true">
+        <NavLink class="menu-link" href="/news" Match="NavLinkMatch.All">
+            <span class="menu-icon far fa-newspaper">
+            </span>
+            <span class="menu-text">Новости</span>
+        </NavLink>
+    </li>
+    <li class="menu-item @GetActive("instructions", NavLinkMatch.All)" aria-haspopup="true">
+        <NavLink class="menu-link" href="/instructions" Match="NavLinkMatch.All">
+            <span class="menu-icon fas fa-clipboard-list">
+            </span>
+            <span class="menu-text">Инструкции</span>
+        </NavLink>
+    </li>
 
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
+    </ul>
 
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Мои квесты список</span>
-                    </NavMenuItem>
-                    <NavMenuItem Url="authentication/profile">
-                        <span class="svg-icon menu-icon">
-
-                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                    <polygon points="0 0 24 0 24 24 0 24" />
-                                    <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                    <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                                </g>
-                            </svg>
-
-                            <!--end::Svg Icon-->
-                        </span>
-                        <span class="menu-text">Личный кабинет</span>
-                    </NavMenuItem>
-                </AuthorizeView>
-                <NavMenuItem Url="/news">
-                    <span class="svg-icon menu-icon">
-
-                        <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <polygon points="0 0 24 0 24 24 0 24" />
-                                <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                            </g>
-                        </svg>
-
-                        <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-text">Новости</span>
-                </NavMenuItem>
-                <NavMenuItem Url="/instructions">
-                    <span class="svg-icon menu-icon">
-
-                        <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <polygon points="0 0 24 0 24 24 0 24" />
-                                <path d="M12.9336061,16.072447 L19.36,10.9564761 L19.5181585,10.8312381 C20.1676248,10.3169571 20.2772143,9.3735535 19.7629333,8.72408713 C19.6917232,8.63415859 19.6104327,8.55269514 19.5206557,8.48129411 L12.9336854,3.24257445 C12.3871201,2.80788259 11.6128799,2.80788259 11.0663146,3.24257445 L4.47482784,8.48488609 C3.82645598,9.00054628 3.71887192,9.94418071 4.23453211,10.5925526 C4.30500305,10.6811601 4.38527899,10.7615046 4.47382636,10.8320511 L4.63,10.9564761 L11.0659024,16.0730648 C11.6126744,16.5077525 12.3871218,16.5074963 12.9336061,16.072447 Z" fill="#000000" fill-rule="nonzero" />
-                                <path d="M11.0563554,18.6706981 L5.33593024,14.122919 C4.94553994,13.8125559 4.37746707,13.8774308 4.06710397,14.2678211 C4.06471678,14.2708238 4.06234874,14.2738418 4.06,14.2768747 L4.06,14.2768747 C3.75257288,14.6738539 3.82516916,15.244888 4.22214834,15.5523151 C4.22358765,15.5534297 4.2250303,15.55454 4.22647627,15.555646 L11.0872776,20.8031356 C11.6250734,21.2144692 12.371757,21.2145375 12.909628,20.8033023 L19.7677785,15.559828 C20.1693192,15.2528257 20.2459576,14.6784381 19.9389553,14.2768974 C19.9376429,14.2751809 19.9363245,14.2734691 19.935,14.2717619 L19.935,14.2717619 C19.6266937,13.8743807 19.0546209,13.8021712 18.6572397,14.1104775 C18.654352,14.112718 18.6514778,14.1149757 18.6486172,14.1172508 L12.9235044,18.6705218 C12.377022,19.1051477 11.6029199,19.1052208 11.0563554,18.6706981 Z" fill="#000000" opacity="0.3" />
-                            </g>
-                        </svg>
-
-                        <!--end::Svg Icon-->
-                    </span>
-                    <span class="menu-text">Инструкции</span>
-                </NavMenuItem>
-            </ul>
-
-            <!--end::Menu Nav-->
-        </div>
+    <!--end::Menu Nav-->
+    </div>
 
         <!--end::Menu Container-->
     </div>
@@ -253,5 +256,30 @@
 <!--end::Aside-->
 
 @code {
-   
+
+    private UserVm user { get; set; } = new UserVm();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UsersDataService.GetUserInfo();
+        NavigationManager.LocationChanged += (s, e) => StateHasChanged();
+
+    }
+
+
+    bool IsActive(string href, NavLinkMatch navLinkMatch = NavLinkMatch.Prefix)
+    {
+        var relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLower();
+        return navLinkMatch == NavLinkMatch.All ? relativePath == href.ToLower() : relativePath.StartsWith(href.ToLower());
+    }
+
+    string GetActive(string href, NavLinkMatch navLinkMatch = NavLinkMatch.Prefix) => IsActive(href, navLinkMatch) ? "menu-item-active" : "";
+
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+
+        await SignOutManager.SetSignOutState();
+
+        NavigationManager.NavigateTo("authentication/logout");
+    }
 }

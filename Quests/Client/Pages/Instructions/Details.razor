@@ -15,7 +15,11 @@
                 <div class="m-11 d-flex align-items-end">
                     <h3 class="font-size-h1 text-dark font-weight-bolder mr-3 mb-0">@Instruction.Title</h3>
                 </div>
-                <div class="bgi-no-repeat bgi-position-center bgi-size-cover h-500px  mw-100 w-100% rounded-bottom" style="background-image: url('@Instruction.Img')"></div>
+                @if (!string.IsNullOrEmpty(Instruction.Img))
+                {
+                    <div class="bgi-no-repeat bgi-position-center bgi-size-cover h-500px  mw-100 w-100% rounded-bottom" style="background-image: url('@Instruction.Img')"></div>
+                }
+
             </div>
         </div>
 

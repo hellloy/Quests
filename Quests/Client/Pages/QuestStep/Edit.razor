@@ -1,8 +1,10 @@
 ﻿@page "/queststep/edit/{Id:int}"
 @page "/queststep/edit"
+@attribute [Authorize(Roles = "Admin")]
 @using Quests.Client.Services
 @using Quests.Shared.Entities.Models
 @using CurrieTechnologies.Razor.SweetAlert2
+@using Microsoft.AspNetCore.Authorization
 
 @inject IJSRuntime JsRuntime
 @inject IQuestStepDataService QuestStepDataService
@@ -198,7 +200,7 @@
         QuestStep.Description = data;
         StateHasChanged();
     }
-    
+
     private async void HandleValidSubmit()
     {
         QuestStep.QuestId = Convert.ToInt32(QuestId);

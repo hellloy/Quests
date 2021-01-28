@@ -12,12 +12,12 @@
 
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-    <link href="assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
+    <!--<link href="assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />-->
     <!--end::Fonts-->
     <!--begin::Page Vendors Styles(used by this page)-->
-    <link href="assets/css/pages/wizard/wizard-1.css" rel="stylesheet" type="text/css" />
+    <!--<link href="assets/css/pages/wizard/wizard-1.css" rel="stylesheet" type="text/css" />-->
 
-    <link href="assets/plugins/custom/cropper/cropper.bundle.css" rel="stylesheet" type="text/css" />
+    <!--<link href="assets/plugins/custom/cropper/cropper.bundle.css" rel="stylesheet" type="text/css" />-->
 
     <!--end::Page Vendors Styles-->
     <!--begin::Global Theme Styles(used by all pages)-->
@@ -31,7 +31,7 @@
     <link href="assets/css/themes/layout/header/menu/light.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/themes/layout/brand/dark.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/themes/layout/aside/dark.css" rel="stylesheet" type="text/css" />
-    <link href="assets/plugins/custom/cropper/cropper.bundle.css" rel="stylesheet" />
+    <!--<link href="assets/plugins/custom/cropper/cropper.bundle.css" rel="stylesheet" />-->
     <link href="css/app.css" rel="stylesheet" />
     <!--end::Layout Themes-->
     <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
@@ -40,21 +40,34 @@
 <!--end::Head-->
 <!--begin::Body-->
 <!-- ReSharper disable once UnknownCssClass -->
-<body id="kt_body" class="page-loading-enabled page-loading header-fixed header-mobile-fixed subheader-enabled subheader-fixed subheader-mobile-fixed aside-enabled aside-fixed aside-minimize-hoverable footer-fixed page-loading">
+<body id="kt_body" class="page-loading-enabled page-loading  header-mobile-fixed   aside-enabled aside-fixed aside-minimize-hoverable footer-fixed page-loading">
+
+    <!--begin::Page loader-->
+<div class="page-loading-enabled page-loading">
+    <div id="loader" class="page-loader page-loader-logo">
+        <img alt="Logo" class="max-h-75px" src="assets/media/logoX.png" />
+        <span class="mt-8 mb-0 text-center">Загрузка...</span>
+        <div class="spinner spinner-track spinner-primary spinner-lg"></div>
+    </div>
+</div>
     <app>
+        
         <!--begin::Page loader-->
-        <div class="page-loader page-loader page-loader page-loader-logo">
-            <img alt="Logo" class="max-h-75px" src="assets/media/logoX.png" />
-            <span class="mt-8 mb-0 text-center">Загрузка...</span>
-            <div class="spinner spinner-track spinner-primary spinner-lg"></div>
+        <div class="page-loading-enabled page-loading page-loading-enabled page-loading">
+            <div class="page-loader page-loader page-loader page-loader-logo">
+                <img alt="Logo" class="max-h-75px" src="assets/media/logoX.png" />
+                <span class="mt-8 mb-0 text-center">Загрузка...</span>
+                <div class="spinner spinner-track spinner-primary spinner-lg"></div>
+            </div>
         </div>
+
         <!--end::Page Loader-->
     </app>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
+        Произошла необработанная ошибка.
         <!-- ReSharper disable once UnknownCssClass -->
-        <a href="" class="reload">Reload</a>
+        <a href="" class="reload">Перегрузить страницу</a>
         <a class="dismiss">🗙</a>
     </div>
     <!-- ReSharper disable once Html.PathError -->
@@ -64,7 +77,7 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
-    <!--<script>var HOST_URL = "https://preview.keenthemes.com/metronic/theme/html/tools/preview";</script>-->
+
     <!--begin::Global Config(global config for global JS scripts)-->
     <script>
         var KTAppSettings = {
@@ -134,23 +147,20 @@
     <script src="assets/js/scripts.bundle.js"></script>
     <script src="assets/js/helper.js"></script>
     <!--begin::Page Vendors(used by this page)-->
-    <script src="assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-    <script src="assets/plugins/custom/cropper/cropper.bundle.js"></script>
-    <script src="assets/plugins/custom/cropper/jquery-cropper.js"></script>
-    <script src="assets/js/inputfile.js"></script>
-
-
-
+    <!--<script src="assets/plugins/custom/cropper/cropper.bundle.js"></script>
+    <script src="assets/plugins/custom/cropper/jquery-cropper.js"></script>-->
+    <!--<script src="assets/js/inputfile.js"></script>-->
     <!--end::Page Vendors-->
     <!--begin::Page Scripts(used by this page)-->
-    <script src="assets/js/pages/widgets.js"></script>
+    <!--<script src="assets/js/pages/widgets.js"></script>-->
 
 
     <script src="assets/js/quest/edit.js"></script>
     <script src="assets/js/quest/list.js"></script>
-    <script src="assets/js/users/list.js"></script>
+<script src="assets/js/users/list.js"></script>
+<script src="https://checkout.rbk.money/checkout.js"></script>
     <!--table table-bordered table-checkable-->
-    <script src="assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <!--<script src="assets/plugins/custom/datatables/datatables.bundle.js"></script>-->
     <!--end::Page Scripts-->
     <!--end::Global Config-->
     <!--begin::Global Theme Bundle(used by all pages)-->

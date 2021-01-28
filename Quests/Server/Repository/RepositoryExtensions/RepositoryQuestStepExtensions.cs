@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Quests.Server.Repository.RepositoryExtensions
 {
@@ -16,7 +17,7 @@ namespace Quests.Server.Repository.RepositoryExtensions
 
             var lowerCaseSearchTerm = searchTerm.Trim().ToLower();
 
-            return questSteps.Where(q => q.Name.ToLower().Contains(lowerCaseSearchTerm));
+            return questSteps.Include(x=>x.Quest).Where(q => q.Name.ToLower().Contains(lowerCaseSearchTerm) || q.Quest.Name.ToLower().Contains(lowerCaseSearchTerm) || q.Description.ToLower().Contains(lowerCaseSearchTerm));
         }
 
         public static IQueryable<QuestStep> Sort(this IQueryable<QuestStep> questSteps, string orderByQueryString) 

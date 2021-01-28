@@ -100,4 +100,33 @@ function BlazorInit(helper) {
     });
 }
 
+function DisableLoader() {
+    $("#loader").remove();
+}
 
+function RbkMoneyCheckout(invoiceId,invoiceAccessToken,helper) {
+
+    const checkout = RbkmoneyCheckout.configure({
+
+        invoiceID: invoiceId,
+        invoiceAccessToken: invoiceAccessToken,
+        name: 'Хочуквест',
+        description: 'Пополнение счета',
+        opened: function () {
+            console.log('Checkout opened');
+        },
+        closed: function () {
+            helper.invokeMethodAsync("InvokeMethod");
+        },
+        finished: function () {
+            helper.invokeMethodAsync("InvokeMethod");
+        }
+
+    });
+
+    checkout.open();
+
+    window.addEventListener('popstate', function() {
+        checkout.close();
+    });
+}

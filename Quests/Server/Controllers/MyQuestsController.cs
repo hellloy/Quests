@@ -83,7 +83,7 @@ namespace Quests.Server.Controllers
             if (myQuest.Status == MyQuestStatus.NotStarted)
             {
                 myQuest.Status = MyQuestStatus.Started;
-                _context.Entry(myQuest).State = EntityState.Modified;
+              _context.Entry(myQuest).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
 

@@ -102,7 +102,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account.Manage
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
                     "Подтверждение email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    $"<h2>Хочу квест - интересные и увлекательные экскурсии с мобильным гидом</h2> Пожалуйста, подтвердите свой аккаунт <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Нажмите тут</a>.");
 
                 StatusMessage = "Ссылка для подтверждения изменения Email отправлена. Пожалуйста, проверьте свой email.";
                 return RedirectToPage();

@@ -5,9 +5,7 @@
 <li class="menu-item @(_active ? "menu-item-active" : "")" aria-haspopup="true">
     <a href=@Url class="menu-link">
         @ChildContent
-      
-
-    </a>
+      </a>
 </li>
 
 @code {
@@ -22,11 +20,12 @@
 
     protected override void OnInitialized()
     {
-        if (Url == "/" || Url == "")
-        {
-            _active = true;
-        }
-        NavigationManager.LocationChanged +=NavigationManagerOnLocationChanged;
+        //if (Url == "/" || Url == "")
+        //{
+        //    _active = true;
+        //}
+        
+        NavigationManager.LocationChanged += NavigationManagerOnLocationChanged;
     }
 
     private void NavigationManagerOnLocationChanged(object sender, LocationChangedEventArgs e)
@@ -34,14 +33,16 @@
         var active = false;
 
 
-        if (Url == "/" || Url == "")
-        {
-            active = e.Location.Equals(NavigationManager.ToAbsoluteUri(Url).ToString());
-        }
-        else
-        {
-            active = e.Location.Contains(Url);
-        }
+        //if (Url == "/" || Url == "")
+        //{
+        //    active = e.Location.Equals(NavigationManager.ToAbsoluteUri(Url).ToString());
+        //}
+        //else
+        //{
+        //    active = e.Location.Contains(Url);
+        //}
+
+        active = e.Location.Contains(Url);
 
         if (active != _active)
         {

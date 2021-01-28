@@ -39,38 +39,39 @@ else
             var linkEdit = "/news/edit/" + @news.Id;
             var linkShow = "/news/details/" + @news.Id;
 
-            <div class="col-12">
-                <div class="card card-custom card-stretch gutter-b">
+            <div class="col-6">
+                <!--<div class="card card-custom card-stretch gutter-b">-->
                     <!--begin::Card Body-->
-                    <div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@news.Img')">
+                    <!--<div class="card-body d-flex rounded bg-primary p-12 flex-column flex-md-row flex-lg-column flex-xxl-row bgi-no-repeat bgi-position-center bgi-size-cover" style="background-image: url('@news.Img')">-->
                         <!--begin::Image-->
                         <!--end::Image-->
                         <!--begin::Card-->
-                        <div class="card card-custom w-auto w-md-300px w-lg-auto w-xxl-400px ml-auto m-10">
-                            <!--begin::Card Body-->
-                            <div class="card-body px-12 py-10">
-                                <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@news.Title</a></h3>
-                            </div>
-                            <!--end::Card Body-->
-                            <div class="card-footer d-flex justify-content-between">
-                                <AuthorizeView Roles="Member">
-                                    <NavLink href="@linkShow" class="btn btn-primary btn-shadow btn-block">Подробно...</NavLink>
-                                </AuthorizeView>
-                                <AuthorizeView Roles="Admin">
-                                    <NavLink class="btn btn-primary btn-shadow btn-icon mr-2" href="@linkShow"><i class="flaticon2-information"></i></NavLink>
-                                    <NavLink class="btn btn-warning btn-shadow btn-icon mr-2" href="@linkEdit"><i class="flaticon2-gear"></i></NavLink>
-                                    <button class="btn btn-danger btn-shadow btn-icon mr-2" @onclick="@(() => DeleteNews(@news.Id))"><i class="flaticon2-trash"></i></button>
-                                </AuthorizeView>
-                            </div>
-                        </div>
+                        
                         <!--end::Card-->
+                    <!--</div>-->
+                    <!--end::Card Body-->
+                <!--</div>-->
+                <div class="card card-custom w-auto  w-lg-auto  ml-auto m-10">
+                    <!--begin::Card Body-->
+                    <div class="card-body px-12 py-10">
+                        <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="@linkShow" class="text-dark-75">@news.Title</a></h3>
                     </div>
                     <!--end::Card Body-->
+                    <div class="card-footer d-flex justify-content-between">
+                        <AuthorizeView Roles="Member">
+                            <NavLink href="@linkShow" class="btn btn-primary btn-shadow btn-block">Подробно...</NavLink>
+                        </AuthorizeView>
+                        <AuthorizeView Roles="Admin">
+                            <NavLink class="btn btn-primary btn-shadow btn-icon mr-2" href="@linkShow"><i class="flaticon2-information"></i></NavLink>
+                            <NavLink class="btn btn-warning btn-shadow btn-icon mr-2" href="@linkEdit"><i class="flaticon2-gear"></i></NavLink>
+                            <button class="btn btn-danger btn-shadow btn-icon mr-2" @onclick="@(() => DeleteNews(@news.Id))"><i class="flaticon2-trash"></i></button>
+                        </AuthorizeView>
+                    </div>
                 </div>
             </div>
         }
 
-
+        
 
     </div>
 }

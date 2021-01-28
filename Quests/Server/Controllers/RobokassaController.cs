@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +31,7 @@ namespace Quests.Server.Controllers
 
         [HttpPost("/payments/result")]
 
-        public async Task<IActionResult> Result([FromForm]RobokassaResult result)
+        public async Task<IActionResult> Result([FromForm] RobokassaResult result)
         {
             bool isCallbackRequestValid = RoboKassa.CheckResult(result);
             if (isCallbackRequestValid)
@@ -43,13 +47,13 @@ namespace Quests.Server.Controllers
 
                     if (user != null) user.Points += number;
 
-                   await _userManager.UpdateAsync(user);
+                    await _userManager.UpdateAsync(user);
 
-                   _context.Entry(invoice).State = EntityState.Modified;
-                  
-                   await _context.SaveChangesAsync();
-               
-                   return Content($"OK{result.InvId}");
+                    _context.Entry(invoice).State = EntityState.Modified;
+
+                    await _context.SaveChangesAsync();
+
+                    return Content($"OK{result.InvId}");
                 }
                 catch (Exception e)
                 {
@@ -59,5 +63,8 @@ namespace Quests.Server.Controllers
 
             return BadRequest();
         }
+
+        
     }
+
 }

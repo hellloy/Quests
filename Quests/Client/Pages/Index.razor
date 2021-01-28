@@ -8,64 +8,64 @@
 @inject IUsersDataService UsersDataService
 @inject SweetAlertService SweetAlertService
 
-    <div class="row">
-        <div class="col-xl-4">
-            <!--begin::Stats Widget 1-->
-            <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-4.svg)">
-                <!--begin::Body-->
-                <div class="card-body">
-                    <span href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">По категориям</span>
-                    <p class="text-dark-75 font-weight-bolder font-size-h5 mt-9 mb-5">
-                        <select class="form-control font-weight-bold pl-2" @bind="CategoryId" >
-                            <option value="0">Выберете категорию:</option>
-                            @foreach (var item in QuestCategories)
-                            {
-                                <option value=@item.Id>@item.Name</option>
-                            }
-                        </select>
-                    </p>
-                </div>
-                <!--end::Body-->
+<div class="row">
+    <div class="col-xl-4">
+        <!--begin::Stats Widget 1-->
+        <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-4.svg)">
+            <!--begin::Body-->
+            <div class="card-body">
+                <span href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">Квесты по категориям</span>
+                <p class="text-dark-75 font-weight-bolder font-size-h5 mt-4 mb-4">
+                    <select class="form-control font-weight-bold pl-2" @bind="CategoryId">
+                        <option value="0">Выберете категорию:</option>
+                        @foreach (var item in QuestCategories)
+                        {
+                            <option value=@item.Id>@item.Name</option>
+                        }
+                    </select>
+                </p>
             </div>
-            <!--end::Stats Widget 1-->
+            <!--end::Body-->
         </div>
-        <div class="col-xl-4">
-            <!--begin::Stats Widget 2-->
-            <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-2.svg)">
-                <!--begin::Body-->
-                <div class="card-body">
-                    <a href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">По городам</a>
-                    
-                    <p class="text-dark-75 font-weight-bolder font-size-h5 mt-9 mb-5">
-                        <select class="form-control font-weight-bold pl-2" @bind="City" >
-                            <option value="0">Выберете город:</option>
-                            @foreach (var item in Cities)
-                            {
-                                <option value="@item">@item</option>
-                            }
-                        </select>
-                    </p>
-                </div>
-                <!--end::Body-->
-            </div>
-            <!--end::Stats Widget 2-->
-        </div>
-        <div class="col-xl-4">
-            <!--begin::Stats Widget 3-->
-            <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-1.svg)">
-                <!--begin::body-->
-                <div class="card-body">
-                    <a href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">Сброс фильтра</a>
-                    
-                    <p class="text-dark-75 font-weight-bolder font-size-h5 mt-9 mb-5">
-                        <button type="button" class="btn btn-success btn-lg btn-block" @onclick="ResetFilter">Сбросить</button>
-                    </p>
-                </div>
-                <!--end::Body-->
-            </div>
-            <!--end::Stats Widget 3-->
-        </div>
+        <!--end::Stats Widget 1-->
     </div>
+    <div class="col-xl-4">
+        <!--begin::Stats Widget 2-->
+        <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-2.svg)">
+            <!--begin::Body-->
+            <div class="card-body">
+                <a href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">Квесты по городам</a>
+
+                <p class="text-dark-75 font-weight-bolder font-size-h5 mt-4 mb-4">
+                    <select class="form-control font-weight-bold pl-2" @bind="City">
+                        <option value="0">Выберете город:</option>
+                        @foreach (var item in Cities)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
+                </p>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stats Widget 2-->
+    </div>
+    <div class="col-xl-4">
+        <!--begin::Stats Widget 3-->
+        <div class="card card-custom bgi-no-repeat card-stretch gutter-b" style="background-position: right top; background-size: 30% auto; background-image: url(/assets/media/svg/shapes/abstract-1.svg)">
+            <!--begin::body-->
+            <div class="card-body">
+                <a href="#" class="card-title font-weight-bold text-muted text-hover-primary font-size-h5">Сброс фильтра</a>
+
+                <p class="text-dark-75 font-weight-bolder font-size-h5 mt-4 mb-4">
+                    <button type="button" class="btn btn-success btn-lg btn-block" @onclick="ResetFilter">Сбросить</button>
+                </p>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stats Widget 3-->
+    </div>
+</div>
 
 
         <div class="row">
@@ -82,7 +82,7 @@
                             <div class="card card-custom w-auto w-md-300px w-lg-auto w-xxl-400px ml-auto m-10">
                                 <!--begin::Card Body-->
                                 <div class="card-body px-12 py-10">
-                                    <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="#" class="text-dark-75">@quest.Name</a></h3>
+                                    <h3 class="font-weight-bolder font-size-h2 mb-1"><a href="@detailsLink" class="text-dark-75">@quest.Name</a></h3>
                                     <div class="text-primary font-size-h4 mb-9">@quest.Price ₽</div>
                                     @*<div class="font-size-sm mb-8">@((MarkupString)quest.Description)</div>*@
                                     <!--begin::Info-->
@@ -180,7 +180,7 @@
                     }
                     else
                     {
-                        NavManager.NavigateTo("/payment/" + (quest.Price - user.Points));
+                        NavManager.NavigateTo("/payment/" + (quest.Price - user.Points)+"/"+quest.Id);
                     }
 
                 }

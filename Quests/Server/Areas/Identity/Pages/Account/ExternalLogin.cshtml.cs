@@ -61,6 +61,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
             [EmailAddress(ErrorMessage = "Поле Email не является действительным адресом электронной почты.")]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
             
         }
 
@@ -119,7 +120,7 @@ namespace Quests.Server.Areas.Identity.Pages.Account
                     {
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email),
                         FirstName = info.Principal.FindFirstValue(ClaimTypes.Name),
-                        Phone = info.Principal.FindFirstValue(ClaimTypes.MobilePhone)
+                        Phone = info.Principal.FindFirstValue(ClaimTypes.MobilePhone),
                     };
                 }
                 return Page();
