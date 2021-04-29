@@ -130,3 +130,30 @@ function RbkMoneyCheckout(invoiceId,invoiceAccessToken,helper) {
         checkout.close();
     });
 }
+
+function CloudPayment(invoiceId, sum, userId,helper) {
+    var widget = new cp.CloudPayments();
+    widget.pay('auth', // или 'charge'
+        { //options
+            publicId: 'pk_d515c410b5609d15c0c94471d9919', //id из личного кабинета
+            description: 'Оплата услуг в hochuquest.com', //назначение
+            amount: sum, //сумма
+            currency: 'RUB', //валюта
+            skin: "modern", //дизайн виджета (необязательно)
+            accountId: userId, //идентификатор плательщика (необязательно)
+            invoiceId: invoiceId, //номер заказа  (необязательно)
+          },
+        {
+            onSuccess: function (options) { // success
+                //действие при успешной оплате
+                helper.invokeMethodAsync("InvokeMethod");
+            },
+            onFail: function (reason, options) { // fail
+                //действие при неуспешной оплате
+            },
+            onComplete: function (paymentResult, options) { //Вызывается как только виджет получает от api.cloudpayments ответ с результатом транзакции.
+                //например вызов вашей аналитики Facebook Pixel
+            }
+        }
+    )
+}

@@ -1,10 +1,12 @@
 ﻿@page "/payment"
 @page "/payment/{Points:int}/{QuestId:int}"
 @using System.ComponentModel.DataAnnotations
+@using Quests.Client.Services
 @using Quests.Shared.VM
 @inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
+@inject IUsersDataService UsersDataService
 
 <div class="card card-custom card-stretch gutter-b">
     <div class="card-body d-flex p-0">
@@ -13,16 +15,15 @@
                                       background-image: url(/assets/media/svg/illustrations/login-visual-1.svg)">
             <h2 class="text-dark pb-5 font-weight-bolder">Пополнение счета</h2>
             <p class="text-dark-50 pb-5 font-size-h5">
-                Доступна оплата через сервис RoboKassa
+                Доступна оплата через сервис CloudPayments
                 <br>Возможность оплатить картой
                 <br>или через популярные платежные сервисы.
-
-            </p>
+                </p>
             <EditForm Model="@_paymentForm" OnValidSubmit="@OnPayment">
                 <InputNumber @bind-Value="_paymentForm.Sum" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg border-0 col-sm-6 no-spinner no-gutters" />
                 <button type="submit" class="btn btn-success font-weight-bold font-size-h3 px-12 py-5 px-6 mt-10 col-sm-6 @_cssWait">Пополнить</button>
             </EditForm>
-            </div>
+        </div>
     </div>
 </div>
 
@@ -37,26 +38,32 @@
 
     PaymentForm _paymentForm = new PaymentForm();
 
+    UserVm _userVm { get; set; } = new UserVm();
 
 
     string _cssWait = string.Empty;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (Points != 0)
             _paymentForm.Sum = Points;
+
+        _userVm = await UsersDataService.GetUserInfo();
     }
+
+
 
     private async Task OnPayment()
     {
-        _cssWait = "spinner spinner-white spinner-right";
-        StateHasChanged();
+        //_cssWait = "spinner spinner-white spinner-right";
+        //StateHasChanged();
 
-        var invoice =  await HttpClient.GetFromJsonAsync<RbkMoneyInvoiceResponse>("api/Payment/" + _paymentForm.Sum);
+        var invoiceId = await HttpClient.GetFromJsonAsync<int>("api/Payment/" + _paymentForm.Sum);
 
-        if (invoice != null)
+        if (invoiceId != null)
         {
-            await JSRuntime.InvokeVoidAsync("RbkMoneyCheckout", invoice.invoice.id, invoice.invoiceAccessToken.payload, DotNetObjectReference.Create(this));
+            //await JSRuntime.InvokeVoidAsync("RbkMoneyCheckout", invoice.invoice.id, invoice.invoiceAccessToken.payload, DotNetObjectReference.Create(this));
+            await JSRuntime.InvokeVoidAsync("CloudPayment", invoiceId, _paymentForm.Sum, _userVm.Id, DotNetObjectReference.Create(this));
         }
 
     }
@@ -73,7 +80,7 @@
     {
         if (QuestId != 0)
         {
-            NavigationManager.NavigateTo("/quest/details/"+QuestId);
+            NavigationManager.NavigateTo("/quest/details/" + QuestId);
         }
         NavigationManager.NavigateTo("/");
     }

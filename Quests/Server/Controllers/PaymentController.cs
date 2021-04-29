@@ -29,7 +29,7 @@ namespace Quests.Server.Controllers
 
         // GET api/<PaymentController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<string>> Get(int id)
+        public async Task<ActionResult<int>> Get(int id)
         {
             var userId = _userManager.GetUserId(User);
             if (userId == null)
@@ -46,13 +46,14 @@ namespace Quests.Server.Controllers
 
             await _context.Invoices.AddAsync(invoice);
             await _context.SaveChangesAsync();
-            var result = RbkMoney.CreateOrder(id, invoice.Id);
-            if (result == "Bad request")
-            {
-                return BadRequest();
-            }
+            return Ok(invoice.Id);
+            //var result = RbkMoney.CreateOrder(id, invoice.Id);
+            //if (result == "Bad request")
+            //{
+            //    return BadRequest();
+            //}
 
-            return result;
+            //return result;
             //return RoboKassa.GenerateAuthLink(id, invoice.Id);
         }
 

@@ -36,6 +36,7 @@ namespace Quests.Server.Controllers
             var user = await _userManager.GetUserAsync(User);
             var userVm = new UserVm
             {
+                Id = user.Id,
                 Img = user.Img,
                 Points = user.Points,
                 Phone = user.PhoneNumber,
